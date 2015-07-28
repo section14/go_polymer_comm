@@ -1,0 +1,11 @@
+bower_components
+*~
+*#
+.DS_STORE
+.netbeans
+nbproject
+.idea
+*.seed
+*.log
+*.out
+*.pid

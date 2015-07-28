@@ -1,0 +1,10 @@
+application: go-polymer-comm
+module: backend
+version: v1
+runtime: go
+api_version: go1
+
+handlers:
+
+- url: /_ah/spi/.*
+  script: _go_app

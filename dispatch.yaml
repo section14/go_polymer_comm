@@ -1,0 +1,8 @@
+application: go-polymer-comm
+
+dispatch:
+    - url: "*/api/*"
+      module: backend
+
+    - url: "*/*"
+      module: frontend

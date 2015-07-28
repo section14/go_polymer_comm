@@ -1,0 +1,24 @@
+{
+  "name": "go-polymer-comm",
+  "version": "0.1.0",
+  "authors": [
+    "section14 <henduism@gmail.com>"
+  ],
+  "description": "Polymer / golang CMS",
+  "main": "index.html",
+  "keywords": [
+    "polymer",
+    "golang"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.0.1"
+  }
+}
