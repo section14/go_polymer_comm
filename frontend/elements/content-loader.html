@@ -1,0 +1,79 @@
+<!--
+
+Element to dynamically load html files. Simply provide a relative path
+to the file that needs loaded in "file-path"
+
+-->
+
+<dom-module id="content-loader">
+
+    <template>
+
+        <div id="pageContent"></div>
+
+    </template>
+
+    <script>
+
+    Polymer({
+
+        is: "content-loader",
+
+        properties: {
+            filePath: {
+                type: String,
+                observer: "loadFile"
+            },
+
+            currentContent: {
+                type: String
+            }
+        },
+
+        loadFile: function() {
+            var baseUrl;
+
+            if (!window.location.origin)
+            {
+                baseUrl = window.location.origin = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '');
+            }
+            else
+            {
+                baseUrl = window.location.origin;
+            }
+
+            if(this.filePath)
+            {
+                //unload any content already loaded
+                if (this.currentContent)
+                {
+                    Polymer.dom(this.$.pageContent).removeChild(this.currentContent);
+                }
+
+                this.importHref(baseUrl + this.filePath, function(event) {
+                    //import data
+                    var link = event.target;
+                    var doc = link.import;
+                    var template = doc.querySelector("template");
+
+                    //container div to hold imported document
+                    var container = document.createElement("div");
+                    var importedNode = document.importNode(template.content, true);
+                    container.appendChild(importedNode);
+
+                    //add import document to local DOM and add a reference to it
+                    this.currentContent = container;
+                    Polymer.dom(this.$.pageContent).appendChild(this.currentContent);
+                },
+                function(error){
+                    console.log(error);
+                });
+
+            }
+        }
+
+    });
+
+    </script>
+
+</dom-module>

@@ -1,0 +1,81 @@
+<!--
+Element to verify that user is an admin
+-->
+
+<link rel="import" href="/elements/admin-login-element.html"> <!-- not needed? -->
+
+<dom-module id="admin-verify">
+
+    <template>
+
+        <iron-ajax
+            id = "adminCheck"
+            on-response = "handleLogin"
+            on-error = "handleError"
+        ></iron-ajax>
+
+        <content></content>
+
+    </template>
+
+    <script>
+
+    Polymer({
+
+        is: "admin-verify",
+
+        properties: {
+            verifyUrl: {
+                type: String
+            },
+
+            dialogName: {
+                type: String
+            }
+        },
+
+        ready: function(){
+            this.verifyAdmin();
+        },
+
+        verifyAdmin: function() {
+            var baseUrl;
+
+            if (!window.location.origin)
+            {
+                baseUrl = window.location.origin = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '');
+            }
+            else
+            {
+                baseUrl = window.location.origin;
+            }
+
+            this.$.adminCheck.url = baseUrl + this.verifyUrl;
+            this.$.adminCheck.method = "GET";
+            this.$.adminCheck.handleAs = "json";
+            this.$.adminCheck.debounceDuration = "500";
+            this.$.adminCheck.generateRequest();
+        },
+
+        handleLogin :function() {
+            //console.log(this.$.adminCheck.lastResponse);
+
+            //let user through
+        },
+
+        handleError: function() {
+            //prompt a login dialog box opening
+            var dialog = document.querySelector("#" + this.dialogName);
+
+            if (dialog)
+            {
+              dialog.open();
+            }
+
+        }
+
+    });
+
+    </script>
+
+</dom-module>

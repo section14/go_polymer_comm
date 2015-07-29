@@ -1,0 +1,131 @@
+<dom-module id="user-login-element">
+
+    <style>
+
+        :host {
+            float: left;
+            padding: 14px;
+            margin: 30px 0px 0px 0px;
+            background-color: #eee;
+        }
+
+    </style>
+
+    <template>
+
+        <iron-ajax
+            id = "csrfForm"
+            on-response = "submitForm"
+        ></iron-ajax>
+
+        <iron-ajax
+            id = "loginForm"
+            on-response = "handleLogin"
+        ></iron-ajax>
+
+        <form is="iron-form">
+
+            <paper-input-container id="email_container">
+                <paper-input-error>E-mail or Password is incorrect</paper-input-error>
+                <label>E-Mail Address</label>
+                <input is="iron-input" id="email" on-blur="validateEmail" value="{{emailInput::input}}">
+            </paper-input-container>
+
+            <paper-input-container id="password_container">
+                <label>Password</label>
+                <input is="iron-input" id="password" type="password" value="{{passwordInput::input}}">
+            </paper-input-container>
+
+            <paper-button raised dialog-dismiss>Cancel</paper-button>
+            <paper-button raised on-tap="handleCsrf">Login</paper-button>
+
+        </form>
+
+    </template>
+
+    <script>
+
+    Polymer({
+
+        is: "user-login-element",
+
+        properties: {
+
+            formUrl: String,
+            loginButton: String
+
+        },
+
+        ready: function(){
+            
+        },
+
+        validateEmail: function() {
+            var re = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
+
+            if (re.test(this.emailInput))
+            {
+                //approve
+                this.$.email_container.invalid = false;
+                this.$.password_container.invalid = false;
+            }
+            else
+            {
+                //deny
+                this.$.email_container.invalid = true;
+                this.$.password_container.invalid = true;
+            }
+        },
+
+        handleCsrf: function() {
+            this.$.csrfForm.url = getBaseUrl() + "/csrfToken";
+            this.$.csrfForm.method = "GET";
+            this.$.csrfForm.handleAs = "json";
+            this.$.csrfForm.debounceDuration = "500";
+            this.$.csrfForm.generateRequest();
+        },
+
+        submitForm: function() {
+            //set csrf value
+            var csrfToken = this.$.csrfForm.lastResponse._csrf
+
+            //prepare ajax request
+            this.$.loginForm.url = this.formUrl;
+            this.$.loginForm.method = "POST";
+            this.$.loginForm.headers = {"X-CSRF-Token" : csrfToken};
+            this.$.loginForm.contentType = "application/json";
+            this.$.loginForm.body = JSON.stringify({email : this.emailInput, password : this.passwordInput});
+            this.$.loginForm.handleAs = "json";
+            this.$.loginForm.debounceDuration = "500";
+
+            //attempt user login
+            this.$.loginForm.generateRequest();
+        },
+
+        handleLogin: function() {
+            //set user to logged in
+            var button = document.getElementById(this.loginButton);
+
+            if (button)
+            {
+                button.loginStatus = true;
+            }
+
+            //close dialog box
+            var parent = Polymer.dom(this).parentNode;
+
+            if (parent)
+            {
+                parent.cancel();
+            }
+
+            //clear form fields
+            this.emailInput = null;
+            this.passwordInput = null;
+        }
+
+    });
+
+    </script>
+
+</dom-module>

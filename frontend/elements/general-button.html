@@ -1,0 +1,44 @@
+<!-- General button for updating the router.
+    page.js is the targeted router
+ -->
+
+<dom-module id="general-button">
+
+    <template>
+
+        <paper-button style="width: 90px;" on-tap="handleTap">
+            <span>[[buttonText]]</span>
+        </paper-button>
+
+    </template>
+
+    <script>
+
+    Polymer({
+
+        is: "general-button",
+
+        properties: {
+            destinationUrl: {
+                type: String
+            },
+
+            buttonTitle: {
+                type: String
+            }
+        },
+
+        ready: function() {
+            this.buttonText = this.buttonTitle;
+        },
+
+        handleTap: function() {
+            //update router
+            page(this.destinationUrl);
+        }
+
+    });
+
+    </script>
+
+</dom-module>

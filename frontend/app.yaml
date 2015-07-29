@@ -8,6 +8,8 @@ threadsafe: yes
 handlers:
 - url: /bower_components
   static_dir: bower_components
+- url: /app
+  static_dir: app
 - url: /general
   static_dir: general
 - url: /js
@@ -18,6 +20,8 @@ handlers:
   static_dir: elements
 - url: /images
   static_dir: images
+- url: /fonts
+  static_dir: fonts
 - url: /elements.html
   static_files: elements.html
   upload: elements.html

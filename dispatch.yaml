@@ -2,7 +2,7 @@ application: go-polymer-comm
 
 dispatch:
     - url: "*/api/*"
-      module: backend
+      module: default
 
     - url: "*/*"
       module: frontend

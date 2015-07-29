@@ -1,0 +1,135 @@
+<!--
+
+todo:
+
+1) Figure out why getBaseUrl() from the general js file isn't loading. Considering keeping the base url var
+local to each element. That would remove any dependency on an external file. IF you decide to go that route,
+create it in one place here to reduce code.
+
+2) Clear user form after successful login
+
+-->
+
+<dom-module id="login-button">
+
+    <template>
+
+        <iron-ajax
+            id = "userStatus"
+            on-response = "getStatus"
+        ></iron-ajax>
+
+        <iron-ajax
+            id = "logoutReq"
+            on-response = "setLoggedOut"
+        ></iron-ajax>
+
+        <paper-button style="width: 90px;" on-tap="handleTap">
+            <span>[[loginText]]</span>
+        </paper-button>
+
+    </template>
+
+    <script>
+
+    Polymer({
+
+        is: "login-button",
+
+        properties: {
+            dialogName: String,
+            loginStatus: {
+                type: Boolean,
+                observer: "checkStatus"
+            }
+        },
+
+        ready: function() {
+            this.checkStatus();
+        },
+
+        getStatus: function() {
+            var status = this.$.userStatus.lastResponse;
+
+            if (status == true)
+            {
+                this.loginText = "Logout";
+                this.loginStatus = true;
+            }
+            else
+            {
+                this.loginText = "Login";
+                this.loginStatus = false;
+            }
+        },
+
+        logUserOut: function() {
+          var baseUrl;
+
+          if (!window.location.origin)
+          {
+              baseUrl = window.location.origin = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '');
+          }
+          else
+          {
+              baseUrl = window.location.origin;
+          }
+
+          this.$.logoutReq.url = baseUrl + "/user/logout";
+          this.$.logoutReq.method = "GET";
+          this.$.logoutReq.handleAs = "json";
+          this.$.logoutReq.debounceDuration = "500";
+          this.$.logoutReq.generateRequest();
+        },
+
+        setLoggedOut: function() {
+          this.loginText = "Login";
+          this.loginStatus = false;
+        },
+
+        checkStatus: function() {
+
+            var baseUrl;
+
+            if (!window.location.origin)
+            {
+                baseUrl = window.location.origin = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '');
+            }
+            else
+            {
+                baseUrl = window.location.origin;
+            }
+
+            this.$.userStatus.url = baseUrl + "/user/logged_in";
+            this.$.userStatus.method = "GET";
+            this.$.userStatus.handleAs = "json";
+            this.$.userStatus.debounceDuration = "500";
+            this.$.userStatus.generateRequest();
+        },
+
+        handleTap: function() {
+            //log user out or launch login box
+
+            if (this.loginStatus == false)
+            {
+              //get dialog box to open
+              var dialog = document.getElementById(this.dialogName);
+
+              if (dialog)
+              {
+                dialog.open();
+              }
+            }
+            else
+            {
+              //logout user
+              this.logUserOut();
+            }
+
+        }
+
+    });
+
+    </script>
+
+</dom-module>
