@@ -11,6 +11,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/gorilla/sessions"
 	//"github.com/gorilla/securecookie"
+	"github.com/dgrijalva/jwt-go"
 
 	//my imports
 	"github.com/section14/go_polymer_comm_pkg/model"
@@ -18,6 +19,7 @@ import (
 
 //setup session
 var store = sessions.NewCookieStore([]byte("auto-intro-amigo-status"))
+var signString []byte = []byte("oboeMadSauceSupremeGammaTrainSuprippp$%&*%^@@@vsmsoiosvh")
 
 func init() {
 	r := mux.NewRouter();
@@ -33,7 +35,19 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	session.Values["rude boy"] = "on the scene run bwoy select"
 	session.Save(r, w)
 
+	//jwt token
+	token := jwt.New(jwt.SigningMethodHS256)
+	token.Claims["userType"] = "regular user"
+	token.Claims["name"] = "Don Draper"
+	//token.Claims["exp"] = time.Now().Add(time.Hour * 72).Unix()
+	tokenString, err := token.SignedString(signString)
+
+	if err != nil {
+		//handle error
+	}
+
     fmt.Fprint(w, "Root level, nothing here")
+	fmt.Fprintf(w, "{\"token\": %s}", tokenString)
 }
 
 func testHandler(w http.ResponseWriter, r *http.Request) {
