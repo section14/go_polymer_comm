@@ -4,12 +4,14 @@ import (
 	//standard library
 	"fmt"
 	"net/http"
+	"time"
 	"log"
 	//"appengine"
 
 	//third party
+	//"golang.org/x/crypto/bcrypt"
 	"github.com/gorilla/mux"
-	"github.com/gorilla/sessions"
+	//"github.com/gorilla/sessions"
 	//"github.com/gorilla/securecookie"
 	"github.com/dgrijalva/jwt-go"
 
@@ -18,7 +20,6 @@ import (
 )
 
 //setup session
-var store = sessions.NewCookieStore([]byte("auto-intro-amigo-status"))
 var signString []byte = []byte("oboeMadSauceSupremeGammaTrainSuprippp$%&*%^@@@vsmsoiosvh")
 
 func init() {
@@ -27,19 +28,17 @@ func init() {
 	r.HandleFunc("/api/", handler)
 	r.HandleFunc("/api/test/", testHandler)
 	r.HandleFunc("/api/bro/", broHandler)
+	r.HandleFunc("/api/flo/", floHandler)
+	r.HandleFunc("/api/upt/", updateHandler)
 	http.Handle("/", r)
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
-	session, _ := store.Get(r, "app-session")
-	session.Values["rude boy"] = "on the scene run bwoy select"
-	session.Save(r, w)
-
 	//jwt token
 	token := jwt.New(jwt.SigningMethodHS256)
 	token.Claims["userType"] = "regular user"
 	token.Claims["name"] = "Don Draper"
-	//token.Claims["exp"] = time.Now().Add(time.Hour * 72).Unix()
+	token.Claims["exp"] = time.Now().Add(time.Hour * 72).Unix()
 	tokenString, err := token.SignedString(signString)
 
 	if err != nil {
@@ -51,12 +50,9 @@ func handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func testHandler(w http.ResponseWriter, r *http.Request) {
-	session, _ := store.Get(r, "app-session")
-	rudeBoy := session.Values["rude boy"]
-
 	userModel := model.User {
-		Email: "test2",
-		Password: "test2",
+		Email: "test3",
+		Password: "test3",
 		Role: 1,
 	}
 
@@ -66,8 +62,6 @@ func testHandler(w http.ResponseWriter, r *http.Request) {
 		//hanle error
 		log.Println(err)
 	}
-
-	log.Println(rudeBoy)
 }
 
 func broHandler(w http.ResponseWriter, r *http.Request) {
@@ -80,6 +74,29 @@ func broHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	fmt.Fprint(w, res)
+}
+
+func floHandler(w http.ResponseWriter, r *http.Request) {
+	userModel := model.User{}
+
+	res, err := userModel.GetUser(w,r,6192449487634432)
+
+	if err != nil {
+		//hanle error
+	}
+
+	fmt.Fprint(w, res)
+}
+
+func updateHandler(w http.ResponseWriter, r *http.Request) {
+	userModel := model.User{}
+
+	_, err := userModel.UpdateEmail(w,r,6192449487634432,"oboes-never-gojos")
+
+	if err != nil {
+		//hanle error
+		log.Println(err)
+	}
 }
 
 func adminHander(w http.ResponseWriter, r *http.Request) {
