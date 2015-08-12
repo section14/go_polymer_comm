@@ -30,6 +30,8 @@ func init() {
 	r.HandleFunc("/api/bro/", broHandler)
 	r.HandleFunc("/api/flo/", floHandler)
 	r.HandleFunc("/api/upt/", updateHandler)
+	r.HandleFunc("/api/del/", deleteHandler)
+
 	http.Handle("/", r)
 }
 
@@ -91,11 +93,21 @@ func floHandler(w http.ResponseWriter, r *http.Request) {
 func updateHandler(w http.ResponseWriter, r *http.Request) {
 	userModel := model.User{}
 
-	_, err := userModel.UpdateEmail(w,r,6192449487634432,"oboes-never-gojos")
+	err := userModel.UpdateEmail(w,r,6192449487634432,"oboes-never-gojos")
 
 	if err != nil {
 		//hanle error
 		log.Println(err)
+	}
+}
+
+func deleteHandler(w http.ResponseWriter, r *http.Request) {
+	userModel := model.User{}
+
+	err := userModel.DeleteUser(w,r,5838406743490560)
+
+	if err != nil {
+		//handle error
 	}
 }
 
