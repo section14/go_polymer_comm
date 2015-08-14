@@ -1,0 +1,13 @@
+<template>
+<p id="para1">
+Shadow DOM (and its approximation via Shady DOM) bring much needed benefits of scoping and style encapsulation to web development, making it safer and easier to reason about the effects of CSS on parts of your application. Styles do not leak into the local DOM from above, and styles do not leak from one local DOM into the local DOM of other elements inside.
+</p>
+
+<p id="para2">
+This is great for protecting scopes from unwanted style leakage. But what about when you intentionally want to customize the style of a custom element’s local DOM, as the user of an element? This often comes up under the umbrella of “theming”. For example a “custom-checkbox” element that may interally use a .checked class can protect itself from being affected by CSS from other components that may also happen to use a .checked class. However, as the user of the checkbox you may wish to intentionally change the color of the check to match your product’s branding, for example. The same “protection” that Shadow DOM provides at the same time introduces a practical barrier to “theming” use cases.
+</p>
+
+<p id="para3">
+One solution the Shadow DOM spec authors provided to address the theming problem are the /deep/ and ::shadow combinators, which allow writing rules that pierce through the Shadow DOM encapsulation boundary. Although Polymer 0.5 promoted this mechanism for theming, it was ultimately unsatisfying for several reasons:
+</p>
+</template>

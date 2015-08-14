@@ -1,0 +1,28 @@
+<div class="row">
+
+    <div>
+
+        <h1>Show Address</h1>
+
+        <form name="show_address">
+
+            <button type="submit" class="btn btn-primary" ng-click="getUserAddressList()" value="show address">Show Addresses</button>
+            <button type="submit" class="btn btn-primary" ng-click="addAddress()" value="show address">Add Addresses</button>
+
+            <br /><br />
+
+            <div ng-repeat="address in userAddressList">
+                <ul>
+                    <li>
+                        <a href="" ng-click="editAddress(address.id)">{{address.line1}}</a> - <a href="" ng-click="deleteAddress(address.id)" style="color: #ff0000;">delete</a>
+                    </li>
+                <ul>
+            </div>
+
+        </form>
+
+        <div ng-include="addressToggle()"></div>
+
+    </div>
+
+</div>

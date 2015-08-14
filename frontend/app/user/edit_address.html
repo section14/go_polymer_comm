@@ -1,0 +1,39 @@
+<h1>Edit Address</h1>
+
+<form name="edit_address">
+
+    <div class="form-group">
+        <label for="address1">Address Line 1</label>
+        <input type="text" name="address1" class="form-control" ng-model="currentAddress.line1" placeholder="Street Address Line 1" required />
+    </div>
+
+    <div class="form-group">
+        <label for="address2">Address Line 2</label>
+        <input type="text" name="address2" class="form-control" ng-model="currentAddress.line2" placeholder="Street Address Line 2" />
+    </div>
+
+    <div class="form-group">
+        <label for="city">City</label>
+        <input type="text" name="city" class="form-control" ng-model="currentAddress.city" placeholder="City" required />
+    </div>
+
+    <div class="form-group">
+        <label for="state">State / Province</label>
+        <input type="text" name="state" class="form-control" ng-model="currentAddress.state" placeholder="State / Province" />
+    </div>
+
+    <div class="form-group">
+        <label for="zip">Zip / Postal Code</label>
+        <input type="text" name="zip" class="form-control" ng-model="currentAddress.zip" placeholder="Zip / Postal Code" />
+    </div>
+
+    <div class="form-group">
+        <label for="country">Country</label>
+        <input type="text" name="country" class="form-control" ng-model="currentAddress.country" placeholder="Country" />
+    </div>
+
+    <button type="submit" class="btn btn-primary" ng-click="updateAddress(editAddressId)" value="edit address">Edit Address</button>
+
+</form>
+
+<br /><br />

@@ -100,7 +100,7 @@ create it in one place here to reduce code.
                 baseUrl = window.location.origin;
             }
 
-            this.$.userStatus.url = baseUrl + "/user/logged_in";
+            this.$.userStatus.url = baseUrl + "/api/user/email/bobsuruncle/";
             this.$.userStatus.method = "GET";
             this.$.userStatus.handleAs = "json";
             this.$.userStatus.debounceDuration = "500";

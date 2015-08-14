@@ -16,7 +16,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 
 	//my imports
-	"github.com/section14/go_polymer_comm_pkg/model"
+	"github.com/section14/go_polymer_comm_pkg/controller"
 )
 
 //setup session
@@ -26,11 +26,17 @@ func init() {
 	r := mux.NewRouter();
 
 	r.HandleFunc("/api/", handler)
+	r.HandleFunc("/api/user/{name}/", UserGetHandler).Methods("GET")
+	r.HandleFunc("/api/user/", UserPostHandler).Methods("POST")
+	r.HandleFunc("/api/user/email/{email}/", UserGetEmailHandler).Methods("GET")
+
+	/*
 	r.HandleFunc("/api/test/", testHandler)
 	r.HandleFunc("/api/bro/", broHandler)
 	r.HandleFunc("/api/flo/", floHandler)
 	r.HandleFunc("/api/upt/", updateHandler)
 	r.HandleFunc("/api/del/", deleteHandler)
+	*/
 
 	http.Handle("/", r)
 }
@@ -51,6 +57,41 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "{\"token\": %s}", tokenString)
 }
 
+/*
+
+Everything below needs error handling
+
+*/
+
+func UserGetHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	user := vars["name"]
+
+	userController := controller.User{}
+	userController.TestHit()
+
+	log.Println("up and down town")
+	log.Println(user)
+}
+
+func UserPostHandler(w http.ResponseWriter, r *http.Request) {
+	userController := controller.User{}
+	userController.TestHit()
+
+	log.Println("user post area")
+}
+
+func UserGetEmailHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	emailAddress := vars["email"]
+
+	userController := controller.User{}
+	userController.TestHit()
+
+	log.Println(emailAddress)
+}
+
+/*
 func testHandler(w http.ResponseWriter, r *http.Request) {
 	userModel := model.User {
 		Email: "test3",
@@ -115,3 +156,4 @@ func adminHander(w http.ResponseWriter, r *http.Request) {
 	//need to make sure user is logged in before they can get here
 	//just return a 500, omit error
 }
+*/
