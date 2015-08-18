@@ -28,7 +28,7 @@ func init() {
 	r.HandleFunc("/api/", handler)
 	r.HandleFunc("/api/user/{name}/", UserGetHandler).Methods("GET")
 	r.HandleFunc("/api/user/", UserPostHandler).Methods("POST")
-	r.HandleFunc("/api/user/email/{email}/", UserGetEmailHandler).Methods("GET")
+	r.HandleFunc("/api/user/email/{email}", UserGetEmailHandler).Methods("GET")
 
 	/*
 	r.HandleFunc("/api/test/", testHandler)
@@ -86,9 +86,14 @@ func UserGetEmailHandler(w http.ResponseWriter, r *http.Request) {
 	emailAddress := vars["email"]
 
 	userController := controller.User{}
-	userController.TestHit()
+	userController.Email = emailAddress
+	userStatus, err := userController.CheckEmail(w,r)
 
-	log.Println(emailAddress)
+	if err != nil {
+		//handle err
+	}
+
+	log.Println(userStatus)
 }
 
 /*
