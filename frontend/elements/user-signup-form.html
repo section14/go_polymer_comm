@@ -1,0 +1,50 @@
+<dom-module id="user-signup-form">
+
+    <style>
+
+    </style>
+
+    <template>
+
+        <iron-ajax
+            id = "loginForm"
+            on-response = "handleLogin"
+        ></iron-ajax>
+
+        <form is="iron-form">
+
+            <paper-input-container id="email_container">
+                <paper-input-error>E-mail or Password is incorrect</paper-input-error>
+                <label>E-Mail Address</label>
+                <input is="iron-input" id="email" on-blur="validateEmail" value="{{emailInput::input}}">
+            </paper-input-container>
+
+            <paper-input-container id="password_container">
+                <label>Password</label>
+                <input is="iron-input" id="password" type="password" value="{{passwordInput::input}}">
+            </paper-input-container>
+
+            <paper-button raised dialog-dismiss>Cancel</paper-button>
+            <paper-button raised on-tap="handleCsrf">Login</paper-button>
+
+        </form>
+
+    </template>
+
+    <script>
+
+        Polymer ({
+
+            is: "user-signup-form",
+
+            properties: {
+                formUrl: String
+            },
+
+            
+
+        });
+
+    </script>
+
+</dom-module>
