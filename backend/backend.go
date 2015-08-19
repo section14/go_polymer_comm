@@ -17,6 +17,7 @@ import (
 
 	//my imports
 	"github.com/section14/go_polymer_comm_pkg/controller"
+	//"github.com/section14/go_polymer_comm_pkg/model"
 )
 
 //setup session
@@ -30,8 +31,9 @@ func init() {
 	r.HandleFunc("/api/user/", UserPostHandler).Methods("POST")
 	r.HandleFunc("/api/user/email/{email}", UserGetEmailHandler).Methods("GET")
 
+	//r.HandleFunc("/api/test/", testHandler)
+
 	/*
-	r.HandleFunc("/api/test/", testHandler)
 	r.HandleFunc("/api/bro/", broHandler)
 	r.HandleFunc("/api/flo/", floHandler)
 	r.HandleFunc("/api/upt/", updateHandler)
@@ -93,13 +95,13 @@ func UserGetEmailHandler(w http.ResponseWriter, r *http.Request) {
 		//handle err
 	}
 
-	log.Println(userStatus)
+	fmt.Fprint(w, userStatus)
 }
 
 /*
 func testHandler(w http.ResponseWriter, r *http.Request) {
 	userModel := model.User {
-		Email: "test3",
+		Email: "frog@gmail.com",
 		Password: "test3",
 		Role: 1,
 	}
@@ -111,6 +113,9 @@ func testHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 }
+*/
+
+/*
 
 func broHandler(w http.ResponseWriter, r *http.Request) {
 	userModel := model.User{}

@@ -2,12 +2,17 @@ window.addEventListener("WebComponentsReady", function() {
 
     page.base("");
 
-    page('/', function () {
+    page('/', function() {
         app.route = "home";
         app.pageContent = "/app/general/home.html";
     });
 
-    page('/admin', function () {
+    page('/signup', function() {
+        app.route = "signup";
+        app.pageContent = "/app/general/signup.html";
+    });
+
+    page('/admin', function() {
         app.route = "admin";
         app.pageContent = "/app/admin/dashboard.html";
     });
@@ -19,12 +24,12 @@ window.addEventListener("WebComponentsReady", function() {
     });
     */
 
-    page('/product', function () {
+    page('/product', function() {
         app.route = "product";
         app.pageContent = "/app/general/product.html";
     });
 
-    page('/contact', function () {
+    page('/contact', function() {
         app.route = "contact";
         app.pageContent = "/app/general/contact.html";
     });
