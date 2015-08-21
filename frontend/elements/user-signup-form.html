@@ -1,20 +1,23 @@
 <dom-module id="user-signup-form">
 
     <style>
-
+        :host {
+            float: left;
+            width: 600px;
+        }
     </style>
 
     <template>
 
         <iron-ajax
             id = "loginForm"
-            on-response = "handleLogin"
+            on-response = "handleSignup"
         ></iron-ajax>
 
         <form is="iron-form">
 
             <paper-input-container id="email_container">
-                <paper-input-error>E-mail or Password is incorrect</paper-input-error>
+                <paper-input-error>E-mail exists already</paper-input-error>
                 <label>E-Mail Address</label>
                 <input is="iron-input" id="email" on-blur="validateEmail" value="{{emailInput::input}}">
             </paper-input-container>
@@ -24,8 +27,12 @@
                 <input is="iron-input" id="password" type="password" value="{{passwordInput::input}}">
             </paper-input-container>
 
-            <paper-button raised dialog-dismiss>Cancel</paper-button>
-            <paper-button raised on-tap="handleCsrf">Login</paper-button>
+            <paper-input-container id="password_repear_container">
+                <label>Repeat Password</label>
+                <input is="iron-input" id="password_repeat" type="password" on-blue="matchPasswords" value="{{passwordRepeatInput::input}}">
+            </paper-input-container>
+
+            <paper-button raised on-tap="handleLogin">Sign Up</paper-button>
 
         </form>
 
@@ -41,7 +48,61 @@
                 formUrl: String
             },
 
-            
+            validateEmail: function() {
+                var re = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
+
+                if (re.test(this.emailInput))
+                {
+                    //approve
+                    this.$.email_container.invalid = false;
+                    this.checkEmail();
+                }
+                else
+                {
+                    //deny
+                    this.$.email_container.invalid = true;
+                }
+            },
+
+            checkEmail: function() {
+                //prepare ajax request
+                console.log("gooooee");
+                this.$.loginForm.url = "/api/user/email/";
+                this.$.loginForm.method = "POST";
+                this.$.loginForm.contentType = "application/json";
+                this.$.loginForm.body = JSON.stringify({email : this.emailInput});
+                this.$.loginForm.handleAs = "json";
+                this.$.loginForm.debounceDuration = "500";
+
+                //check if email exists
+                this.$.loginForm.generateRequest();
+
+            },
+
+            matchPasswords: function() {
+
+            },
+
+            submitForm: function() {
+                //set csrf value
+                //var csrfToken = this.$.csrfForm.lastResponse._csrf
+
+                //prepare ajax request
+                this.$.loginForm.url = this.formUrl;
+                this.$.loginForm.method = "POST";
+                this.$.loginForm.headers = {"X-CSRF-Token" : csrfToken};
+                this.$.loginForm.contentType = "application/json";
+                this.$.loginForm.body = JSON.stringify({email : this.emailInput, password : this.passwordInput});
+                this.$.loginForm.handleAs = "json";
+                this.$.loginForm.debounceDuration = "500";
+
+                //attempt user login
+                this.$.loginForm.generateRequest();
+            },
+
+            handleSignup: function() {
+
+            }
 
         });
 

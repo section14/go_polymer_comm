@@ -29,7 +29,7 @@ func init() {
 	r.HandleFunc("/api/", handler)
 	r.HandleFunc("/api/user/{name}/", UserGetHandler).Methods("GET")
 	r.HandleFunc("/api/user/", UserPostHandler).Methods("POST")
-	r.HandleFunc("/api/user/email/{email}", UserGetEmailHandler).Methods("GET")
+	r.HandleFunc("/api/user/email/", UserGetEmailHandler).Methods("POST")
 
 	//r.HandleFunc("/api/test/", testHandler)
 
@@ -72,7 +72,6 @@ func UserGetHandler(w http.ResponseWriter, r *http.Request) {
 	userController := controller.User{}
 	userController.TestHit()
 
-	log.Println("up and down town")
 	log.Println(user)
 }
 
@@ -94,6 +93,8 @@ func UserGetEmailHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		//handle err
 	}
+
+	log.Println(emailAddress)
 
 	fmt.Fprint(w, userStatus)
 }
