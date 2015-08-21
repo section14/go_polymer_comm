@@ -4,6 +4,7 @@ import (
 	//standard library
 	"fmt"
 	"net/http"
+	"encoding/json"
 	"time"
 	"log"
 	//"appengine"
@@ -83,20 +84,30 @@ func UserPostHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func UserGetEmailHandler(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	emailAddress := vars["email"]
+
+	type Message struct {
+	Email string `json:"email"`
+	}
+
+	var m Message
+	decoder := json.NewDecoder(r.Body)
+	err:= decoder.Decode(&m)
+
+	if err != nil {
+		//handle err
+	}
 
 	userController := controller.User{}
-	userController.Email = emailAddress
+	userController.Email = m.Email
 	userStatus, err := userController.CheckEmail(w,r)
 
 	if err != nil {
 		//handle err
 	}
 
-	log.Println(emailAddress)
-
-	fmt.Fprint(w, userStatus)
+	log.Println(m.Email)
+	log.Println(userStatus)
+	//fmt.Fprint(w, userStatus)
 }
 
 /*
