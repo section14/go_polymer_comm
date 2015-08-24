@@ -4,13 +4,11 @@ import (
 	//standard library
 	"fmt"
 	"net/http"
-	"encoding/json"
 	"time"
 	"log"
 	//"appengine"
 
 	//third party
-	//"golang.org/x/crypto/bcrypt"
 	"github.com/gorilla/mux"
 	//"github.com/gorilla/sessions"
 	//"github.com/gorilla/securecookie"
@@ -29,8 +27,9 @@ func init() {
 
 	r.HandleFunc("/api/", handler)
 	r.HandleFunc("/api/user/{name}/", UserGetHandler).Methods("GET")
-	r.HandleFunc("/api/user/", UserPostHandler).Methods("POST")
+	r.HandleFunc("/api/user/", UserCreateHandler).Methods("POST")
 	r.HandleFunc("/api/user/email/", UserGetEmailHandler).Methods("POST")
+	r.HandleFunc("/api/user/login/", UserLoginHandler).Methods("POST")
 
 	//r.HandleFunc("/api/test/", testHandler)
 
@@ -76,38 +75,35 @@ func UserGetHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println(user)
 }
 
-func UserPostHandler(w http.ResponseWriter, r *http.Request) {
+func UserCreateHandler(w http.ResponseWriter, r *http.Request) {
 	userController := controller.User{}
-	userController.TestHit()
-
-	log.Println("user post area")
-}
-
-func UserGetEmailHandler(w http.ResponseWriter, r *http.Request) {
-
-	type Message struct {
-	Email string `json:"email"`
-	}
-
-	var m Message
-	decoder := json.NewDecoder(r.Body)
-	err:= decoder.Decode(&m)
+	_, err := userController.CreateUser(w,r)
 
 	if err != nil {
 		//handle err
 	}
+}
 
+func UserGetEmailHandler(w http.ResponseWriter, r *http.Request) {
 	userController := controller.User{}
-	userController.Email = m.Email
 	userStatus, err := userController.CheckEmail(w,r)
 
 	if err != nil {
 		//handle err
 	}
 
-	log.Println(m.Email)
-	log.Println(userStatus)
-	//fmt.Fprint(w, userStatus)
+	fmt.Fprint(w, userStatus)
+}
+
+func UserLoginHandler(w http.ResponseWriter, r *http.Request) {
+	userController := controller.User{}
+	userStatus, err := userController.Login(w,r)
+
+	if err != nil {
+		//handle err
+	}
+
+	fmt.Fprint(w, userStatus)
 }
 
 /*
