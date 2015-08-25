@@ -27,6 +27,7 @@ window.addEventListener("WebComponentsReady", function() {
     page('/product', function() {
         app.route = "product";
         app.pageContent = "/app/general/product.html";
+        sessionStorage.setItem("page-name", "product");
     });
 
     page('/contact', function() {

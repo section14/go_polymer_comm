@@ -44,19 +44,7 @@ func init() {
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
-	//jwt token
-	token := jwt.New(jwt.SigningMethodHS256)
-	token.Claims["userType"] = "regular user"
-	token.Claims["name"] = "Don Draper"
-	token.Claims["exp"] = time.Now().Add(time.Hour * 72).Unix()
-	tokenString, err := token.SignedString(signString)
-
-	if err != nil {
-		//handle error
-	}
-
     fmt.Fprint(w, "Root level, nothing here")
-	fmt.Fprintf(w, "{\"token\": %s}", tokenString)
 }
 
 /*
@@ -99,11 +87,30 @@ func UserLoginHandler(w http.ResponseWriter, r *http.Request) {
 	userController := controller.User{}
 	userStatus, err := userController.Login(w,r)
 
-	if err != nil {
+	if err != nil || userStatus == false {
 		//handle err
 	}
 
+	//issue jwt token
+	token := getToken()
+
 	fmt.Fprint(w, userStatus)
+}
+
+func getToken() string {
+	//jwt token
+	token := jwt.New(jwt.SigningMethodHS256)
+	token.Claims["userId"] = "some Id string"
+	token.Claims["userRole"] = "1"
+	token.Claims["exp"] = time.Now().Add(time.Hour * 72).Unix()
+	tokenString, err := token.SignedString(signString)
+
+	if err != nil {
+		//handle error
+	}
+
+	//return token
+	return tokenString
 }
 
 /*
