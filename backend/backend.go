@@ -94,7 +94,10 @@ func UserLoginHandler(w http.ResponseWriter, r *http.Request) {
 	//issue jwt token
 	token := getToken()
 
-	fmt.Fprint(w, userStatus)
+	//encode json return here?
+	//Need to pass the token to user somehow
+
+	fmt.Fprint(w, token)
 }
 
 func getToken() string {
