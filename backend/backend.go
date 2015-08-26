@@ -4,6 +4,7 @@ import (
 	//standard library
 	"fmt"
 	"net/http"
+	"encoding/json"
 	"time"
 	"log"
 	//"appengine"
@@ -29,7 +30,7 @@ func init() {
 	r.HandleFunc("/api/user/{name}/", UserGetHandler).Methods("GET")
 	r.HandleFunc("/api/user/", UserCreateHandler).Methods("POST")
 	r.HandleFunc("/api/user/email/", UserGetEmailHandler).Methods("POST")
-	r.HandleFunc("/api/user/login/", UserLoginHandler).Methods("POST")
+	r.HandleFunc("/api/user/login", UserLoginHandler).Methods("POST")
 
 	//r.HandleFunc("/api/test/", testHandler)
 
@@ -91,13 +92,18 @@ func UserLoginHandler(w http.ResponseWriter, r *http.Request) {
 		//handle err
 	}
 
+	type JwtToken struct {
+		Token string `json:"token"`
+	}
+
 	//issue jwt token
-	token := getToken()
+	jwt := getToken()
+	jsonJwt := &JwtToken {
+		Token: jwt,
+	}
+	token,_ := json.Marshal(jsonJwt)
 
-	//encode json return here?
-	//Need to pass the token to user somehow
-
-	fmt.Fprint(w, token)
+	fmt.Fprint(w, string(token))
 }
 
 func getToken() string {

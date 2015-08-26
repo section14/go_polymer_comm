@@ -49,9 +49,9 @@ create it in one place here to reduce code.
         },
 
         getStatus: function() {
-            var status = this.$.userStatus.lastResponse;
+            //var status = this.$.userStatus.lastResponse;
 
-            console.log(status);
+            var status = false;
 
             if (status == true)
             {
@@ -77,7 +77,7 @@ create it in one place here to reduce code.
               baseUrl = window.location.origin;
           }
 
-          this.$.logoutReq.url = baseUrl + "/user/logout";
+          this.$.logoutReq.url = baseUrl + "/api/user/logout";
           this.$.logoutReq.method = "GET";
           this.$.logoutReq.handleAs = "application/json";
           this.$.logoutReq.debounceDuration = "500";
@@ -102,6 +102,10 @@ create it in one place here to reduce code.
                 baseUrl = window.location.origin;
             }
 
+            //fix this shit to do the login check. Might not even need it if we're passing a jwt token
+            //on each backend access request
+
+            /*
             this.$.userStatus.url = baseUrl + "/api/user/login/";
             this.$.userStatus.method = "POST";
             this.$.userStatus.handleAs = "application/json";
@@ -109,6 +113,7 @@ create it in one place here to reduce code.
             this.$.userStatus.handleAs = "json";
             this.$.userStatus.debounceDuration = "500";
             this.$.userStatus.generateRequest();
+            */
 
             //attempt user login
             this.$.userStatus.generateRequest();

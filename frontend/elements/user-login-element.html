@@ -14,11 +14,6 @@
     <template>
 
         <iron-ajax
-            id = "csrfForm"
-            on-response = "submitForm"
-        ></iron-ajax>
-
-        <iron-ajax
             id = "loginForm"
             on-response = "handleLogin"
         ></iron-ajax>
@@ -37,7 +32,7 @@
             </paper-input-container>
 
             <paper-button raised dialog-dismiss>Cancel</paper-button>
-            <paper-button raised on-tap="handleCsrf">Login</paper-button>
+            <paper-button raised on-tap="submitForm">Login</paper-button>
 
         </form>
 
@@ -57,7 +52,7 @@
         },
 
         ready: function(){
-            
+
         },
 
         validateEmail: function() {
@@ -77,22 +72,10 @@
             }
         },
 
-        handleCsrf: function() {
-            this.$.csrfForm.url = getBaseUrl() + "/csrfToken";
-            this.$.csrfForm.method = "GET";
-            this.$.csrfForm.handleAs = "json";
-            this.$.csrfForm.debounceDuration = "500";
-            this.$.csrfForm.generateRequest();
-        },
-
         submitForm: function() {
-            //set csrf value
-            var csrfToken = this.$.csrfForm.lastResponse._csrf
-
             //prepare ajax request
             this.$.loginForm.url = this.formUrl;
             this.$.loginForm.method = "POST";
-            this.$.loginForm.headers = {"X-CSRF-Token" : csrfToken};
             this.$.loginForm.contentType = "application/json";
             this.$.loginForm.body = JSON.stringify({email : this.emailInput, password : this.passwordInput});
             this.$.loginForm.handleAs = "json";
@@ -103,6 +86,8 @@
         },
 
         handleLogin: function() {
+            var res = this.$.loginForm.lastResponse;
+
             //set user to logged in
             var button = document.getElementById(this.loginButton);
 
@@ -122,6 +107,8 @@
             //clear form fields
             this.emailInput = null;
             this.passwordInput = null;
+
+            console.log(res);
         }
 
     });
