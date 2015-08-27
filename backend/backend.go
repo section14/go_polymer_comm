@@ -94,12 +94,14 @@ func UserLoginHandler(w http.ResponseWriter, r *http.Request) {
 
 	type JwtToken struct {
 		Token string `json:"token"`
+		Status bool `json:"status"`
 	}
 
 	//issue jwt token
 	jwt := getToken()
 	jsonJwt := &JwtToken {
 		Token: jwt,
+		Status: true,
 	}
 	token,_ := json.Marshal(jsonJwt)
 

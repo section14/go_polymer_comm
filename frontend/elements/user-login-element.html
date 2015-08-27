@@ -88,27 +88,37 @@
         handleLogin: function() {
             var res = this.$.loginForm.lastResponse;
 
-            //set user to logged in
-            var button = document.getElementById(this.loginButton);
-
-            if (button)
+            //if login is sucessful
+            if (res['status'] === true)
             {
-                button.loginStatus = true;
+                //set user to logged in
+                var button = document.getElementById(this.loginButton);
+
+                if (button)
+                {
+                    button.loginStatus = true;
+                }
+
+                //set user token
+                sessionStorage.setItem("token", res['token']);
+
+                //close dialog box
+                var parent = Polymer.dom(this).parentNode;
+
+                if (parent)
+                {
+                    parent.cancel();
+                }
+
+                //clear form fields
+                this.emailInput = null;
+                this.passwordInput = null;
+            }
+            else
+            {
+                //handle this error somehow
             }
 
-            //close dialog box
-            var parent = Polymer.dom(this).parentNode;
-
-            if (parent)
-            {
-                parent.cancel();
-            }
-
-            //clear form fields
-            this.emailInput = null;
-            this.passwordInput = null;
-
-            console.log(res);
         }
 
     });
