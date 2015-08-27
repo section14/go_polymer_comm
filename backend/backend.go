@@ -85,24 +85,31 @@ func UserGetEmailHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func UserLoginHandler(w http.ResponseWriter, r *http.Request) {
-	userController := controller.User{}
-	userStatus, err := userController.Login(w,r)
-
-	if err != nil || userStatus == false {
-		//handle err
-	}
-
 	type JwtToken struct {
 		Token string `json:"token"`
 		Status bool `json:"status"`
 	}
 
-	//issue jwt token
-	jwt := getToken()
-	jsonJwt := &JwtToken {
-		Token: jwt,
-		Status: true,
+	userController := controller.User{}
+	userStatus, err := userController.Login(w,r)
+
+	var jsonJwt *JwtToken
+
+	if err != nil || userStatus == false {
+		//incorrect login data
+		jsonJwt = &JwtToken {
+			Token: " ",
+			Status: false,
+		}
+	} else {
+		//issue jwt token
+		jwt := getToken()
+		jsonJwt = &JwtToken {
+			Token: jwt,
+			Status: true,
+		}
 	}
+
 	token,_ := json.Marshal(jsonJwt)
 
 	fmt.Fprint(w, string(token))
