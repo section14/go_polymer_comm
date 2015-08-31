@@ -76,7 +76,7 @@
             //prepare ajax request
             this.$.loginForm.url = this.formUrl;
             this.$.loginForm.method = "POST";
-            this.$.loginForm.contentType = "application/json";
+            this.$.loginForm.contentType = "json";
             this.$.loginForm.body = JSON.stringify({email : this.emailInput, password : this.passwordInput});
             this.$.loginForm.handleAs = "json";
             this.$.loginForm.debounceDuration = "500";
@@ -91,18 +91,17 @@
             //if login is sucessful
             if (res['status'] === true)
             {
-                console.log(res['status']);
-
                 //set user to logged in
                 var button = document.getElementById(this.loginButton);
 
                 if (button)
                 {
-                    button.loginStatus = true;
+                    button.loggedIn = true;
                 }
 
                 //set user token
-                sessionStorage.setItem("token", res['token']);
+                localStorage.setItem("token", res['token']);
+                localStorage.setItem("userStatus", "true");
 
                 //close dialog box
                 var parent = Polymer.dom(this).parentNode;

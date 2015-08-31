@@ -31,6 +31,7 @@ func init() {
 	r.HandleFunc("/api/user/", UserCreateHandler).Methods("POST")
 	r.HandleFunc("/api/user/email/", UserGetEmailHandler).Methods("POST")
 	r.HandleFunc("/api/user/login", UserLoginHandler).Methods("POST")
+	r.HandleFunc("/api/user/logout", UserLogoutHandler).Methods("GET")
 
 	//r.HandleFunc("/api/test/", testHandler)
 
@@ -111,7 +112,23 @@ func UserLoginHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	token,_ := json.Marshal(jsonJwt)
+	fmt.Fprint(w, string(token))
+}
 
+func UserLogoutHandler(w http.ResponseWriter, r *http.Request) {
+	type JwtToken struct {
+		Token string `json:"token"`
+		Status bool `json:"status"`
+	}
+
+	var jsonJwt *JwtToken
+
+	jsonJwt = &JwtToken {
+		Token: " ",
+		Status: false,
+	}
+
+	token,_ := json.Marshal(jsonJwt)
 	fmt.Fprint(w, string(token))
 }
 

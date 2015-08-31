@@ -14,16 +14,6 @@ create it in one place here to reduce code.
 
     <template>
 
-        <iron-ajax
-            id = "userStatus"
-            on-response = "getStatus"
-        ></iron-ajax>
-
-        <iron-ajax
-            id = "logoutReq"
-            on-response = "setLoggedOut"
-        ></iron-ajax>
-
         <paper-button style="width: 90px;" on-tap="handleTap">
             <span>[[loginText]]</span>
         </paper-button>
@@ -38,91 +28,52 @@ create it in one place here to reduce code.
 
         properties: {
             dialogName: String,
-            loginStatus: {
+            loggedIn: {
                 type: Boolean,
-                observer: "checkStatus"
+                observer: "setStatus"
             }
         },
 
         ready: function() {
-            this.checkStatus();
+            this.getStatus();
         },
 
         getStatus: function() {
-            //var status = this.$.userStatus.lastResponse;
+            if (localStorage.getItem("userStatus") == "true")
+            {
+                this.loggedIn = true;
+            }
+            else
+            {
+                this.loggedIn = false;
+            }
 
-            var status = false;
+            this.setStatus();
+        },
 
-            if (status == true)
+        setStatus: function() {
+            if (this.loggedIn == true)
             {
                 this.loginText = "Logout";
-                this.loginStatus = true;
             }
             else
             {
                 this.loginText = "Login";
-                this.loginStatus = false;
             }
-        },
-
-        logUserOut: function() {
-          var baseUrl;
-
-          if (!window.location.origin)
-          {
-              baseUrl = window.location.origin = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '');
-          }
-          else
-          {
-              baseUrl = window.location.origin;
-          }
-
-          this.$.logoutReq.url = baseUrl + "/api/user/logout";
-          this.$.logoutReq.method = "GET";
-          this.$.logoutReq.handleAs = "application/json";
-          this.$.logoutReq.debounceDuration = "500";
-          this.$.logoutReq.generateRequest();
         },
 
         setLoggedOut: function() {
           this.loginText = "Login";
-          this.loginStatus = false;
-        },
+          this.loggedIn = false;
 
-        checkStatus: function() {
-
-            var baseUrl;
-
-            if (!window.location.origin)
-            {
-                baseUrl = window.location.origin = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '');
-            }
-            else
-            {
-                baseUrl = window.location.origin;
-            }
-
-            //fix this shit to do the login check. Might not even need it if we're passing a jwt token
-            //on each backend access request
-
-            /*
-            this.$.userStatus.url = baseUrl + "/api/user/login/";
-            this.$.userStatus.method = "POST";
-            this.$.userStatus.handleAs = "application/json";
-            this.$.userStatus.body = JSON.stringify({email : "anthony@gmail.com", password : "123456"});
-            this.$.userStatus.handleAs = "json";
-            this.$.userStatus.debounceDuration = "500";
-            this.$.userStatus.generateRequest();
-            */
-
-            //attempt user login
-            this.$.userStatus.generateRequest();
+          //set user token
+          localStorage.setItem("token", " ");
+          localStorage.setItem("userStatus", "false");
         },
 
         handleTap: function() {
             //log user out or launch login box
-
-            if (this.loginStatus == false)
+            if (this.loggedIn == false)
             {
               //get dialog box to open
               var dialog = document.getElementById(this.dialogName);
@@ -135,7 +86,7 @@ create it in one place here to reduce code.
             else
             {
               //logout user
-              this.logUserOut();
+              this.setLoggedOut();
             }
 
         }
