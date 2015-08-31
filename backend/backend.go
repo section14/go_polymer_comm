@@ -27,7 +27,7 @@ func init() {
 	r := mux.NewRouter();
 
 	r.HandleFunc("/api/", handler)
-	r.HandleFunc("/api/user/{name}/", UserGetHandler).Methods("GET")
+	r.HandleFunc("/api/user/", UserGetHandler).Methods("GET")
 	r.HandleFunc("/api/user/", UserCreateHandler).Methods("POST")
 	r.HandleFunc("/api/user/email/", UserGetEmailHandler).Methods("POST")
 	r.HandleFunc("/api/user/login", UserLoginHandler).Methods("POST")
@@ -46,7 +46,8 @@ func init() {
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
-    fmt.Fprint(w, "Root level, nothing here")
+    //do a re-direct or something here
+	fmt.Fprint(w, "Root level, nothing here")
 }
 
 /*
@@ -56,9 +57,6 @@ Everything below needs error handling
 */
 
 func UserGetHandler(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	user := vars["name"]
-
 	userController := controller.User{}
 	userController.TestHit()
 
@@ -146,6 +144,10 @@ func getToken() string {
 
 	//return token
 	return tokenString
+}
+
+func checkToken() bool {
+	
 }
 
 /*
