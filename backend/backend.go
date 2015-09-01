@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"encoding/json"
 	"time"
-	"log"
+	//"log"
 	//"appengine"
 
 	//third party
@@ -59,8 +59,6 @@ Everything below needs error handling
 func UserGetHandler(w http.ResponseWriter, r *http.Request) {
 	userController := controller.User{}
 	userController.TestHit()
-
-	log.Println(user)
 }
 
 func UserCreateHandler(w http.ResponseWriter, r *http.Request) {
@@ -114,6 +112,13 @@ func UserLoginHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func UserLogoutHandler(w http.ResponseWriter, r *http.Request) {
+	/*
+
+	This method may be unnecessary since the frontend will be
+	logging the user out by removing the token 
+
+	*/
+
 	type JwtToken struct {
 		Token string `json:"token"`
 		Status bool `json:"status"`
@@ -146,9 +151,9 @@ func getToken() string {
 	return tokenString
 }
 
-func checkToken() bool {
-	
-}
+//func checkToken() bool {
+
+//}
 
 /*
 func testHandler(w http.ResponseWriter, r *http.Request) {
