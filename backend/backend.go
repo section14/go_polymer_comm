@@ -59,6 +59,10 @@ Everything below needs error handling
 func UserGetHandler(w http.ResponseWriter, r *http.Request) {
 	userController := controller.User{}
 	userController.TestHit()
+
+	/*
+	
+	*/
 }
 
 func UserCreateHandler(w http.ResponseWriter, r *http.Request) {
@@ -88,11 +92,11 @@ func UserLoginHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	userController := controller.User{}
-	userStatus, err := userController.Login(w,r)
+	user, err := userController.Login(w,r)
 
 	var jsonJwt *JwtToken
 
-	if err != nil || userStatus == false {
+	if err != nil {
 		//incorrect login data
 		jsonJwt = &JwtToken {
 			Token: " ",
@@ -100,7 +104,7 @@ func UserLoginHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	} else {
 		//issue jwt token
-		jwt := getToken()
+		jwt := generateToken(user.Id, user.Role)
 		jsonJwt = &JwtToken {
 			Token: jwt,
 			Status: true,
@@ -115,7 +119,7 @@ func UserLogoutHandler(w http.ResponseWriter, r *http.Request) {
 	/*
 
 	This method may be unnecessary since the frontend will be
-	logging the user out by removing the token 
+	logging the user out by removing the token
 
 	*/
 
@@ -135,11 +139,11 @@ func UserLogoutHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, string(token))
 }
 
-func getToken() string {
+func generateToken(Id int64, Role int) string {
 	//jwt token
 	token := jwt.New(jwt.SigningMethodHS256)
-	token.Claims["userId"] = "some Id string"
-	token.Claims["userRole"] = "1"
+	token.Claims["userId"] = Id
+	token.Claims["userRole"] = Role
 	token.Claims["exp"] = time.Now().Add(time.Hour * 72).Unix()
 	tokenString, err := token.SignedString(signString)
 
@@ -151,9 +155,9 @@ func getToken() string {
 	return tokenString
 }
 
-//func checkToken() bool {
+func parseToken() {
 
-//}
+}
 
 /*
 func testHandler(w http.ResponseWriter, r *http.Request) {
