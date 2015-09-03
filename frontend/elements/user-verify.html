@@ -1,0 +1,78 @@
+<dom-module id="user-verify">
+
+  <template>
+
+      <iron-ajax
+          id = "userCheck"
+          on-response = "handleLogin"
+          on-error = "handleError"
+      ></iron-ajax>
+
+      <content></content>
+
+  </template>
+
+  <script>
+
+    Polymer({
+
+        is: "user-verify",
+
+        properties: {
+            verifyUrl: {
+                type: String
+            },
+
+            dialogName: {
+                type: String
+            }
+        },
+
+        ready: function(){
+            this.verifyUser();
+        },
+
+        verifyUser: function() {
+            var baseUrl;
+
+            if (!window.location.origin)
+            {
+                baseUrl = window.location.origin = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '');
+            }
+            else
+            {
+                baseUrl = window.location.origin;
+            }
+
+            var userToken = localStorage.getItem("token");
+
+            this.$.userCheck.url = baseUrl + this.verifyUrl;
+            this.$.userCheck.method = "GET";
+            this.$.userCheck.handleAs = "json";
+            this.$.userCheck.headers = {"User-Token": userToken};
+            this.$.userCheck.debounceDuration = "500";
+            this.$.userCheck.generateRequest();
+        },
+
+        handleLogin :function() {
+            //console.log(this.$.adminCheck.lastResponse);
+
+            //let user through
+        },
+
+        handleError: function() {
+            //prompt a login dialog box opening
+            var dialog = document.querySelector("#" + this.dialogName);
+
+            if (dialog)
+            {
+              dialog.open();
+            }
+
+        }
+
+    });
+
+  </script>
+
+</dom-module>

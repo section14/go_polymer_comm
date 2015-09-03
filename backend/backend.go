@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"encoding/json"
 	"time"
-	//"log"
+	"log"
 	//"appengine"
 
 	//third party
@@ -60,9 +60,8 @@ func UserGetHandler(w http.ResponseWriter, r *http.Request) {
 	userController := controller.User{}
 	userController.TestHit()
 
-	/*
-	
-	*/
+	//verify user
+	parseToken(r)
 }
 
 func UserCreateHandler(w http.ResponseWriter, r *http.Request) {
@@ -155,8 +154,28 @@ func generateToken(Id int64, Role int) string {
 	return tokenString
 }
 
-func parseToken() {
+func parseToken(r *http.Request) {
+	myToken :=r.Header.Get("User-Token")
 
+	token, err := jwt.Parse(myToken, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+
+			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+		}
+
+		//I think the signing key may be what needs
+		//returned here
+
+		return signString, nil
+	})
+
+	//log.Println(token.Claims)
+
+	if err == nil && token.Valid {
+		log.Println("work it girl")
+	} else {
+		log.Println("you are forked: ", err)
+	}
 }
 
 /*
