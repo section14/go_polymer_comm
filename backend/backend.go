@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"encoding/json"
 	"time"
-	"log"
+	//"log"
 	//"appengine"
 
 	//third party
@@ -58,10 +58,19 @@ Everything below needs error handling
 
 func UserGetHandler(w http.ResponseWriter, r *http.Request) {
 	userController := controller.User{}
-	userController.TestHit()
 
 	//verify user
-	parseToken(r)
+	userToken,err := parseToken(r)
+
+	if err != nil {
+		http.Error(w, "Invalid user", 400)
+	} else {
+		userId := userToken.Claims["userId"]
+		user := userController.GetUser(r,userId)
+		json,_ := json.Marshal(user)
+
+		fmt.Fprint(w, json)
+	}
 }
 
 func UserCreateHandler(w http.ResponseWriter, r *http.Request) {
@@ -148,33 +157,31 @@ func generateToken(Id int64, Role int) string {
 
 	if err != nil {
 		//handle error
+		return ""
 	}
 
 	//return token
 	return tokenString
 }
 
-func parseToken(r *http.Request) {
+func parseToken(r *http.Request) (*jwt.Token, error) {
 	myToken :=r.Header.Get("User-Token")
 
 	token, err := jwt.Parse(myToken, func(token *jwt.Token) (interface{}, error) {
-		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 
+		//verify signing type
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
 		}
-
-		//I think the signing key may be what needs
-		//returned here
 
 		return signString, nil
 	})
 
-	//log.Println(token.Claims)
-
+	//return error or decoded token
 	if err == nil && token.Valid {
-		log.Println("work it girl")
+		return token, nil
 	} else {
-		log.Println("you are forked: ", err)
+		return nil, err
 	}
 }
 
