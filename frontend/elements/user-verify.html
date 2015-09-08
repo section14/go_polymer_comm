@@ -8,7 +8,7 @@
           on-error = "handleError"
       ></iron-ajax>
 
-      <content></content>
+      <content id="contentArea"></content>
 
   </template>
 
@@ -61,13 +61,20 @@
         },
 
         handleError: function() {
-            //prompt a login dialog box opening
+
+            //redirect home
+            page("/");
+
+            /*
+            //maybe implement this?
+
             var dialog = document.querySelector("#" + this.dialogName);
 
             if (dialog)
             {
               dialog.open();
             }
+            */
 
         }
 

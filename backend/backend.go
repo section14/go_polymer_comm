@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"encoding/json"
 	"time"
-	//"log"
+	"log"
 	//"appengine"
 
 	//third party
@@ -17,21 +17,24 @@ import (
 
 	//my imports
 	"github.com/section14/go_polymer_comm_pkg/controller"
-	//"github.com/section14/go_polymer_comm_pkg/model"
 )
 
-//setup session
+//jwt token signing string
 var signString []byte = []byte("oboeMadSauceSupremeGammaTrainSuprippp$%&*%^@@@vsmsoiosvh")
 
 func init() {
 	r := mux.NewRouter();
 
+	//user
 	r.HandleFunc("/api/", handler)
 	r.HandleFunc("/api/user/", UserGetHandler).Methods("GET")
 	r.HandleFunc("/api/user/", UserCreateHandler).Methods("POST")
 	r.HandleFunc("/api/user/email/", UserGetEmailHandler).Methods("POST")
 	r.HandleFunc("/api/user/login", UserLoginHandler).Methods("POST")
 	r.HandleFunc("/api/user/logout", UserLogoutHandler).Methods("GET")
+	//r.HandleFunc("/api/user/admin", AdminCreateHandler).Methods("GET")
+
+	//address
 
 	//r.HandleFunc("/api/test/", testHandler)
 
@@ -56,6 +59,20 @@ Everything below needs error handling
 
 */
 
+/*
+func AdminCreateHandler(w http.ResponseWriter, r *http.Request) {
+	userController := controller.User{}
+
+	status, err := userController.CreateAdmin(r)
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	log.Println(status)
+}
+*/
+
 func UserGetHandler(w http.ResponseWriter, r *http.Request) {
 	userController := controller.User{}
 
@@ -65,11 +82,15 @@ func UserGetHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(w, "Invalid user", 400)
 	} else {
-		userId := userToken.Claims["userId"]
-		user := userController.GetUser(r,userId)
-		json,_ := json.Marshal(user)
+		userId := userToken.Claims["userId"].(float64)
+		user, err := userController.GetUser(r,int64(userId))
 
-		fmt.Fprint(w, json)
+		if err != nil {
+			http.Error(w, "Invalid user", 400)
+		} else {
+			jsonRes,_ := json.Marshal(user)
+			fmt.Fprint(w, string(jsonRes))
+		}
 	}
 }
 
@@ -78,7 +99,7 @@ func UserCreateHandler(w http.ResponseWriter, r *http.Request) {
 	_, err := userController.CreateUser(w,r)
 
 	if err != nil {
-		//handle err
+		log.Println(err)
 	}
 }
 

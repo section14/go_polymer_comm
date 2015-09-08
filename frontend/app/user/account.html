@@ -1,5 +1,11 @@
 <user-verify verify-url="/api/user/" dialog-name="login_dialog">
     <template>
         You're in the account area
+
+        <!-- create new address -->
+        <paper-dialog id="new_address_dialog" style="width: 60%; max-width: 300px;" modal>
+            <user-login-element form-url="/api/user/login" login-button="login-button"></user-login-element>
+        </paper-dialog>
+
     </template>
 </user-verify>
