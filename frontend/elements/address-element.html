@@ -1,0 +1,159 @@
+<dom-module id="address-element">
+
+    <style>
+        :host {
+            float: left;
+            width: 350px;
+        }
+    </style>
+
+    <template>
+
+        <iron-ajax
+            id = "addressForm"
+            on-response = "handleRes"
+            on-error = "handleErr"
+        ></iron-ajax>
+
+        <form is="iron-form">
+
+            <paper-input-container id="street1">
+                <paper-input-error>This field is required</paper-input-error>
+                <label>Street Line 1</label>
+                <input is="iron-input" value="{{street1Input::input}}">
+            </paper-input-container>
+
+            <paper-input-container id="street2">
+                <label>Street Line 2</label>
+                <input is="iron-input" value="{{street2Input::input}}">
+            </paper-input-container>
+
+            <paper-input-container id="city">
+                <paper-input-error>This field is required</paper-input-error>
+                <label>City</label>
+                <input is="iron-input" value="{{cityInput::input}}">
+            </paper-input-container>
+
+            <paper-input-container id="state">
+                <paper-input-error>This field is required</paper-input-error>
+                <label>State / Province</label>
+                <input is="iron-input" value="{{stateInput::input}}">
+            </paper-input-container>
+
+            <paper-input-container id="country">
+                <paper-input-error>This field is required</paper-input-error>
+                <label>Country</label>
+                <input is="iron-input" value="{{countryInput::input}}">
+            </paper-input-container>
+
+            <paper-button raised dialog-dismiss>Cancel</paper-button>
+            <paper-button raised on-tap="checkForm">Submit</paper-button>
+
+        </form>
+
+    </template>
+
+    <script>
+
+    Polymer({
+
+        is: "address-element",
+
+        properties: {
+
+        },
+
+        ready: function() {
+
+        },
+
+        checkForm: function() {
+            //package form data
+            var formData = this.packageData();
+
+            //container for errors
+            var formErrors = [];
+
+            if (formData.street1 == null || formData.street1 == "") {
+                this.$.street1.invalid = true;
+                formErrors.push("street1");
+            } else {
+                this.$.street1.invalid = false;
+            }
+
+            if (formData.city == null || formData.city == "") {
+                this.$.city.invalid = true;
+                formErrors.push("city");
+            } else {
+                this.$.city.invalid = false;
+            }
+
+            if (formData.state == null || formData.state == "") {
+                this.$.state.invalid = true;
+                formErrors.push("state");
+            } else {
+                this.$.state.invalid = false;
+            }
+
+            if (formData.country == null || formData.country == "") {
+                this.$.country.invalid = true;
+                formErrors.push("country");
+            } else {
+                this.$.country.invalid = false;
+            }
+
+            //if errors are empty, submit form
+            if (formErrors.length == 0)
+            {
+                this.submitForm();
+            }
+
+        },
+
+        submitForm: function() {
+            console.log("fuck yeaggggfffhh");
+
+            //get user token
+            var userToken = localStorage.getItem("token");
+
+            //package form data
+            var formData = this.packageData();
+
+            //prepare ajax request
+            this.$.addressForm.url = this.formUrl;
+            this.$.addressForm.method = "POST";
+            this.$.addressForm.headers = {"User-Token": userToken};
+            this.$.addressForm.contentType = "application/json";
+            this.$.addressForm.body = JSON.stringify(formData);
+            this.$.addressForm.handleAs = "json";
+            this.$.addressForm.debounceDuration = "500";
+
+            //submit request
+            //this.$.addressForm.generateRequest();
+        },
+
+        handleRes: function() {
+            console.log("added that address");
+        },
+
+        handleErr: function() {
+            console.log("borked that address!!");
+        },
+
+        packageData: function() {
+            var formData = {
+                street1: this.street1Input,
+                street2: this.street2Input,
+                city: this.cityInput,
+                state: this.stateInput,
+                country: this.countryInput
+            }
+
+            return formData;
+        }
+
+    });
+
+    </script>
+
+</dom-module>
