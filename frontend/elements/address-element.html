@@ -60,7 +60,9 @@
         is: "address-element",
 
         properties: {
-
+            formUrl: {
+                type: String
+            }
         },
 
         ready: function() {
@@ -111,7 +113,6 @@
         },
 
         submitForm: function() {
-            console.log("fuck yeaggggfffhh");
 
             //get user token
             var userToken = localStorage.getItem("token");
@@ -129,11 +130,19 @@
             this.$.addressForm.debounceDuration = "500";
 
             //submit request
-            //this.$.addressForm.generateRequest();
+            this.$.addressForm.generateRequest();
         },
 
         handleRes: function() {
             console.log("added that address");
+
+            //close dialog box
+            var parent = Polymer.dom(this).parentNode;
+
+            if (parent)
+            {
+                parent.cancel();
+            }
         },
 
         handleErr: function() {

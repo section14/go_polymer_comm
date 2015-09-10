@@ -32,6 +32,7 @@ func init() {
 	r.HandleFunc("/api/user/email/", UserGetEmailHandler).Methods("POST")
 	r.HandleFunc("/api/user/login", UserLoginHandler).Methods("POST")
 	r.HandleFunc("/api/user/logout", UserLogoutHandler).Methods("GET")
+	r.HandleFunc("/api/user/address", UserAddressHandler).Methods("POST")
 	//r.HandleFunc("/api/user/admin", AdminCreateHandler).Methods("GET")
 
 	//address
@@ -166,6 +167,27 @@ func UserLogoutHandler(w http.ResponseWriter, r *http.Request) {
 
 	token,_ := json.Marshal(jsonJwt)
 	fmt.Fprint(w, string(token))
+}
+
+func UserAddressHandler(w http.ResponseWriter, r *http.Request) {
+	addressController := controller.Address{}
+
+	//verify user
+	userToken,err := parseToken(r)
+
+	if err != nil {
+		http.Error(w, "Invalid user", 400)
+	} else {
+		userId := userToken.Claims["userId"].(float64)
+		addressController.UserId = int64(userId)
+		_, err := addressController.CreateAddress(r)
+
+		if err != nil {
+			http.Error(w, "Invalid user", 400)
+		}
+	}
+
+	fmt.Fprint(w, true)
 }
 
 func generateToken(Id int64, Role int) string {
