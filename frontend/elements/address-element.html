@@ -40,6 +40,11 @@
                 <input is="iron-input" value="{{stateInput::input}}">
             </paper-input-container>
 
+            <paper-input-container id="postalcode">
+                <label>Postal Code</label>
+                <input is="iron-input" value="{{postCodeInput::input}}">
+            </paper-input-container>
+
             <paper-input-container id="country">
                 <paper-input-error>This field is required</paper-input-error>
                 <label>Country</label>
@@ -155,6 +160,7 @@
                 street2: this.street2Input,
                 city: this.cityInput,
                 state: this.stateInput,
+                postcode: this.postCodeInput,
                 country: this.countryInput
             }
 

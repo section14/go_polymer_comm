@@ -1,0 +1,62 @@
+<dom-module id="get-all-address">
+
+    <script>
+    </script>
+
+    <template>
+
+        <iron-ajax
+            id = "addressForm"
+            on-response = "handleRes"
+            on-error = "handleErr"
+        ></iron-ajax>
+
+    </template>
+
+    <script>
+
+    Polymer({
+
+        is: "get-all-address",
+
+        properties: {
+            formUrl: {
+                type: String
+            }
+        },
+
+        ready: function() {
+            this.getList();
+        },
+
+        getList: function() {
+            //get user token
+            var userToken = localStorage.getItem("token");
+
+            //prepare ajax request
+            this.$.addressForm.url = this.formUrl;
+            this.$.addressForm.method = "GET";
+            this.$.addressForm.headers = {"User-Token": userToken};
+            this.$.addressForm.contentType = "application/json";
+            this.$.addressForm.handleAs = "json";
+            this.$.addressForm.debounceDuration = "500";
+
+            //submit request
+            this.$.addressForm.generateRequest();
+        },
+
+        handleRes: function() {
+
+        },
+
+        handleErr: function() {
+            var res = this.$.addressForm.lastResponse;
+
+            console.log(res);
+        }
+
+    });
+
+    </script>
+
+</dom-module>
