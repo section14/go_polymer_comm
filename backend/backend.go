@@ -34,6 +34,7 @@ func init() {
 	r.HandleFunc("/api/user/logout", UserLogoutHandler).Methods("GET")
 	r.HandleFunc("/api/user/address", UserGetAllAddressHandler).Methods("GET")
 	r.HandleFunc("/api/user/address", UserSetAddressHandler).Methods("POST")
+	r.HandleFunc("/api/user/address/update", UserUpdateAddressHandler).Methods("POST")
 	r.HandleFunc("/api/user/address/{addressId}", UserGetAddressHandler).Methods("GET")
 	//r.HandleFunc("/api/user/admin", AdminCreateHandler).Methods("GET")
 
@@ -174,12 +175,6 @@ func UserLogoutHandler(w http.ResponseWriter, r *http.Request) {
 func UserGetAllAddressHandler(w http.ResponseWriter, r *http.Request) {
 	addressController := controller.Address{}
 
-	/*
-
-	UserId isn't being inserted into Address datastore. Figure it aht
-
-	*/
-
 	//verify user
 	userToken,err := parseToken(r)
 
@@ -192,10 +187,31 @@ func UserGetAllAddressHandler(w http.ResponseWriter, r *http.Request) {
 		addresses, err := addressController.GetAllAddress(r)
 
 		if err != nil {
-			http.Error(w, "Invalidddd user", 400)
-			log.Println("error: ", err)
+			http.Error(w, "Invalid user", 400)
 		} else {
 			jsonRes,_ := json.Marshal(addresses)
+			fmt.Fprint(w, string(jsonRes))
+		}
+	}
+}
+
+func UserGetAddressHandler(w http.ResponseWriter, r *http.Request) {
+	addressController := controller.Address{}
+
+	//verify user
+	userToken,err := parseToken(r)
+
+	if err != nil {
+		http.Error(w, "Invalid user", 400)
+	} else {
+		userId := userToken.Claims["userId"].(float64)
+		addressController.UserId = int64(userId)
+		address, err := addressController.GetAddress(r)
+
+		if err != nil {
+			http.Error(w, "Invalid user", 400)
+		} else {
+			jsonRes,_ := json.Marshal(address)
 			fmt.Fprint(w, string(jsonRes))
 		}
 	}
@@ -222,7 +238,7 @@ func UserSetAddressHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, true)
 }
 
-func UserGetAddressHandler(w http.ResponseWriter, r *http.Request) {
+func UserUpdateAddressHandler(w http.ResponseWriter, r *http.Request) {
 	addressController := controller.Address{}
 
 	//verify user
@@ -233,15 +249,14 @@ func UserGetAddressHandler(w http.ResponseWriter, r *http.Request) {
 	} else {
 		userId := userToken.Claims["userId"].(float64)
 		addressController.UserId = int64(userId)
-		address, err := addressController.GetAddress(r)
+		_, err := addressController.UpdateAddress(r)
 
 		if err != nil {
 			http.Error(w, "Invalid user", 400)
-		} else {
-			jsonRes,_ := json.Marshal(address)
-			fmt.Fprint(w, string(jsonRes))
 		}
 	}
+
+	fmt.Fprint(w, true)
 }
 
 func generateToken(Id int64, Role int) string {

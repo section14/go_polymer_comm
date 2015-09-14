@@ -1,15 +1,62 @@
 <dom-module id="get-all-address">
 
-    <script>
-    </script>
+    <style>
+    .address_link {
+        cursor: pointer;
+        color: blue;
+        text-decoration: underline;
+        font-weight: bold;
+    }
+    </style>
 
     <template>
 
         <iron-ajax
             id = "addressForm"
-            on-response = "handleRes"
-            on-error = "handleErr"
+            on-response = "handleGetRes"
+            on-error = "handleGetErr"
         ></iron-ajax>
+
+        <iron-ajax
+            id = "editAddress"
+            on-response = "handleEditRes"
+            on-error = "handleEditErr"
+        ></iron-ajax>
+
+        <template is="dom-repeat" items="{{addressList}}">
+            <div>
+                ----
+                <ul>
+                    <li>
+                        <div class="address_link" on-tap="handleTap">Address#: <span>{{index}}</span></div>
+                    </li>
+                    <li>
+                        <span>{{item.street1}}</span>
+                    </li>
+                    <li>
+                        <span>{{item.street2}}</span>
+                    </li>
+                    <li>
+                        <span>{{item.city}}</span>
+                    </li>
+                    <li>
+                        <span>{{item.state}}</span>
+                    </li>
+                    <li>
+                        <span>{{item.postcode}}</span>
+                    </li>
+                    <li>
+                        <span>{{item.country}}</span>
+                    </li>
+                </ul>
+                ----
+            </div>
+        </template>
+
+        <!-- edit an address -->
+        <paper-dialog id="edit_address_dialog" style="width: 60%; max-width: 300px;" modal>
+            <address-element id="editElement" form-url="{{editUrl}}" form-edit-data="{{formData}}"></address-element>
+        </paper-dialog>
 
     </template>
 
@@ -45,14 +92,66 @@
             this.$.addressForm.generateRequest();
         },
 
-        handleRes: function() {
+        handleGetRes: function() {
+            this.addressList = this.$.addressForm.lastResponse;
+        },
+
+        handleGetErr: function() {
+            //do something
+        },
+
+        editAddress: function() {
+            //get user token
+            var userToken = localStorage.getItem("token");
+
+            //prepare ajax request
+            this.$.addressForm.url = this.editUrl;
+            this.$.addressForm.method = "POST";
+            this.$.addressForm.headers = {"User-Token": userToken};
+            this.$.addressForm.contentType = "application/json";
+            this.$.addressForm.handleAs = "json";
+            this.$.addressForm.debounceDuration = "500";
+
+            //submit request
+            this.$.addressForm.generateRequest();
+        },
+
+        handleEditRes: function() {
 
         },
 
-        handleErr: function() {
-            var res = this.$.addressForm.lastResponse;
+        handleEditErr: function() {
 
-            console.log(res);
+        },
+
+        handleTap: function(a) {
+            //get form model
+            this.address = a.model.item;
+
+            //make url
+            this.editUrl = this.formUrl + "/update";
+
+            //get address data
+            this.formData = {
+                street1: this.address.street1,
+                street2: this.address.street2,
+                city: this.address.city,
+                state: this.address.state,
+                postcode: this.address.postcode,
+                country: this.address.country,
+            };
+
+            //get address element and set data
+            var addressForm = this.$.editElement;
+            addressForm.updateId = this.address.id;
+            addressForm.populateForm();
+
+            //launch dialog to edit address
+            var dialog = this.$.edit_address_dialog;
+
+            if (dialog) {
+                dialog.open();
+            }
         }
 
     });

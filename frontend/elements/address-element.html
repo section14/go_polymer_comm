@@ -64,13 +64,33 @@
 
         is: "address-element",
 
+        listeners: {
+
+        },
+
         properties: {
             formUrl: {
+                type: String
+            },
+
+            formData: {
+                type: Object
+            },
+
+            formEditData: {
+                type: Object
+            },
+
+            updateId: {
                 type: String
             }
         },
 
         ready: function() {
+
+        },
+
+        attributeChanged: function() {
 
         },
 
@@ -156,6 +176,7 @@
 
         packageData: function() {
             var formData = {
+                id: this.updateId,
                 street1: this.street1Input,
                 street2: this.street2Input,
                 city: this.cityInput,
@@ -165,6 +186,15 @@
             }
 
             return formData;
+        },
+
+        populateForm: function() {
+            this.street1Input = this.formEditData.street1;
+            this.street2Input = this.formEditData.street2;
+            this.cityInput = this.formEditData.city;
+            this.stateInput = this.formEditData.state;
+            this.postCodeInput = this.formEditData.postcode;
+            this.countryInput = this.formEditData.country;
         }
 
     });
