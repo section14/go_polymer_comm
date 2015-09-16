@@ -21,11 +21,6 @@ redirects a user if they try to cancel a login attetmpt
     <template>
 
         <iron-ajax
-            id = "csrfForm"
-            on-response = "submitForm"
-        ></iron-ajax>
-
-        <iron-ajax
             id = "loginForm"
             on-response = "handleLogin"
         ></iron-ajax>
@@ -44,7 +39,7 @@ redirects a user if they try to cancel a login attetmpt
             </paper-input-container>
 
             <paper-button id="cancelButton" raised on-tap="redirectUser">Cancel</paper-button>
-            <paper-button raised on-tap="handleCsrf">Login</paper-button>
+            <paper-button raised on-tap="submitForm">Login</paper-button>
 
         </form>
 
@@ -57,29 +52,17 @@ redirects a user if they try to cancel a login attetmpt
         is: "admin-login-element",
 
         properties: {
+            formUrl: {
+                type: String
+            },
 
-            formUrl: String,
-            loginButton: String
-
+            loginButton: {
+                type: String
+            }
         },
 
         ready: function(){
 
-        },
-
-        baseUrl: function() {
-            var url;
-
-            if (!window.location.origin)
-            {
-                url = window.location.origin = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '');
-            }
-            else
-            {
-                url = window.location.origin;
-            }
-
-            return url;
         },
 
         validateEmail: function() {
@@ -99,23 +82,11 @@ redirects a user if they try to cancel a login attetmpt
             }
         },
 
-        handleCsrf: function() {
-            this.$.csrfForm.url = this.baseUrl() + "/csrfToken";
-            this.$.csrfForm.method = "GET";
-            this.$.csrfForm.handleAs = "json";
-            this.$.csrfForm.debounceDuration = "500";
-            this.$.csrfForm.generateRequest();
-        },
-
         submitForm: function() {
-            //set csrf value
-            var csrfToken = this.$.csrfForm.lastResponse._csrf
-
             //prepare ajax request
             this.$.loginForm.url = this.formUrl;
             this.$.loginForm.method = "POST";
-            this.$.loginForm.headers = {"X-CSRF-Token" : csrfToken};
-            this.$.loginForm.contentType = "application/json";
+            this.$.loginForm.contentType = "json";
             this.$.loginForm.body = JSON.stringify({email : this.emailInput, password : this.passwordInput});
             this.$.loginForm.handleAs = "json";
             this.$.loginForm.debounceDuration = "500";
@@ -125,25 +96,40 @@ redirects a user if they try to cancel a login attetmpt
         },
 
         handleLogin: function() {
-            //set user to logged in
-            var button = document.getElementById(this.loginButton);
+            var res = this.$.loginForm.lastResponse;
 
-            if (button)
+            //if login is sucessful
+            if (res['status'] === true)
             {
-                button.loginStatus = true;
+                //set user to logged in
+                var button = document.getElementById(this.loginButton);
+
+                if (button)
+                {
+                    button.loggedIn = true;
+                }
+
+                //set user token
+                localStorage.setItem("token", res['token']);
+                localStorage.setItem("userStatus", "true");
+
+                //close dialog box
+                var parent = Polymer.dom(this).parentNode;
+
+                if (parent)
+                {
+                    parent.cancel();
+                }
+
+                //clear form fields
+                this.emailInput = null;
+                this.passwordInput = null;
+            }
+            else
+            {
+                //handle this error somehow
             }
 
-            //close dialog box
-            var parent = Polymer.dom(this).parentNode;
-
-            if (parent)
-            {
-                parent.cancel();
-            }
-
-            //clear form fields
-            this.emailInput = null;
-            this.passwordInput = null;
         },
 
         redirectUser: function() {

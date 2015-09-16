@@ -27,18 +27,24 @@ func init() {
 
 	//user
 	r.HandleFunc("/api/", handler)
-	r.HandleFunc("/api/user/", UserGetHandler).Methods("GET")
-	r.HandleFunc("/api/user/", UserCreateHandler).Methods("POST")
-	r.HandleFunc("/api/user/email/", UserGetEmailHandler).Methods("POST")
+	r.HandleFunc("/api/user", UserGetHandler).Methods("GET")
+	r.HandleFunc("/api/user", UserCreateHandler).Methods("POST")
+	r.HandleFunc("/api/user/email", UserGetEmailHandler).Methods("POST")
 	r.HandleFunc("/api/user/login", UserLoginHandler).Methods("POST")
 	r.HandleFunc("/api/user/logout", UserLogoutHandler).Methods("GET")
+
+	//user address
 	r.HandleFunc("/api/user/address", UserGetAllAddressHandler).Methods("GET")
 	r.HandleFunc("/api/user/address", UserSetAddressHandler).Methods("POST")
 	r.HandleFunc("/api/user/address/update", UserUpdateAddressHandler).Methods("POST")
 	r.HandleFunc("/api/user/address/{addressId}", UserGetAddressHandler).Methods("GET")
 	//r.HandleFunc("/api/user/admin", AdminCreateHandler).Methods("GET")
 
-	//address
+	//admin
+	r.HandleFunc("/api/admin/login", AdminLoginHandler).Methods("POST")
+
+	//product
+	r.HandleFunc("/api/category", CategoryCreateHandler).Methods("POST")
 
 	//r.HandleFunc("/api/test/", testHandler)
 
@@ -258,6 +264,64 @@ func UserUpdateAddressHandler(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Fprint(w, true)
 }
+
+/*
+
+Admin
+
+*/
+
+func AdminLoginHandler(w http.ResponseWriter, r *http.Request) {
+	type JwtToken struct {
+		Token string `json:"token"`
+		Status bool `json:"status"`
+	}
+
+	userController := controller.User{}
+	user, err := userController.Login(w,r)
+
+	var jsonJwt *JwtToken
+
+	//ensure role is admin (2)
+	if err != nil || user.Role == 1 {
+		//incorrect login data
+		jsonJwt = &JwtToken {
+			Token: " ",
+			Status: false,
+		}
+	} else {
+		//issue jwt token
+		jwt := generateToken(user.Id, user.Role)
+		jsonJwt = &JwtToken {
+			Token: jwt,
+			Status: true,
+		}
+	}
+
+	token,_ := json.Marshal(jsonJwt)
+	fmt.Fprint(w, string(token))
+}
+
+/*
+
+Category
+
+*/
+
+func CategoryCreateHandler(w http.ResponseWriter, r *http.Request) {
+	categoryController := controller.Category{}
+	_, err := categoryController.CreateCategory(w,r)
+
+	if err != nil {
+		log.Println(err)
+	}
+}
+
+/*
+
+Token
+
+*/
 
 func generateToken(Id int64, Role int) string {
 	//jwt token

@@ -79,7 +79,7 @@
 
             checkEmail: function() {
                 //prepare ajax request
-                this.$.checkForm.url = "/api/user/email/";
+                this.$.checkForm.url = "/api/user/email";
                 this.$.checkForm.method = "POST";
                 this.$.checkForm.contentType = "application/json";
                 this.$.checkForm.body = JSON.stringify({email : this.emailInput});
