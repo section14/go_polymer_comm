@@ -17,6 +17,7 @@ import (
 
 	//my imports
 	"github.com/section14/go_polymer_comm_pkg/controller"
+	"github.com/section14/go_polymer_comm_pkg/user-auth"
 )
 
 //jwt token signing string
@@ -87,7 +88,8 @@ func UserGetHandler(w http.ResponseWriter, r *http.Request) {
 	userController := controller.User{}
 
 	//verify user
-	userToken,err := parseToken(r)
+	jwtToken := auth.JwtToken{}
+	userToken,err := jwtToken.ParseToken(r)
 
 	if err != nil {
 		http.Error(w, "Invalid user", 400)
@@ -182,7 +184,8 @@ func UserGetAllAddressHandler(w http.ResponseWriter, r *http.Request) {
 	addressController := controller.Address{}
 
 	//verify user
-	userToken,err := parseToken(r)
+	jwtToken := auth.JwtToken{}
+	userToken,err := jwtToken.ParseToken(r)
 
 	if err != nil {
 		http.Error(w, "Invalid user", 400)
@@ -205,7 +208,8 @@ func UserGetAddressHandler(w http.ResponseWriter, r *http.Request) {
 	addressController := controller.Address{}
 
 	//verify user
-	userToken,err := parseToken(r)
+	jwtToken := auth.JwtToken{}
+	userToken,err := jwtToken.ParseToken(r)
 
 	if err != nil {
 		http.Error(w, "Invalid user", 400)
@@ -227,7 +231,8 @@ func UserSetAddressHandler(w http.ResponseWriter, r *http.Request) {
 	addressController := controller.Address{}
 
 	//verify user
-	userToken,err := parseToken(r)
+	jwtToken := auth.JwtToken{}
+	userToken,err := jwtToken.ParseToken(r)
 
 	if err != nil {
 		http.Error(w, "Invalid user", 400)
@@ -248,7 +253,8 @@ func UserUpdateAddressHandler(w http.ResponseWriter, r *http.Request) {
 	addressController := controller.Address{}
 
 	//verify user
-	userToken,err := parseToken(r)
+	jwtToken := auth.JwtToken{}
+	userToken,err := jwtToken.ParseToken(r)
 
 	if err != nil {
 		http.Error(w, "Invalid user", 400)
