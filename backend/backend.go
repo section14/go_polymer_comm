@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"net/http"
 	"encoding/json"
-	"time"
 	"log"
 	//"appengine"
 
@@ -13,15 +12,11 @@ import (
 	"github.com/gorilla/mux"
 	//"github.com/gorilla/sessions"
 	//"github.com/gorilla/securecookie"
-	"github.com/dgrijalva/jwt-go"
 
 	//my imports
 	"github.com/section14/go_polymer_comm_pkg/controller"
 	"github.com/section14/go_polymer_comm_pkg/user-auth"
 )
-
-//jwt token signing string
-var signString []byte = []byte("oboeMadSauceSupremeGammaTrainSuprippp$%&*%^@@@vsmsoiosvh")
 
 func init() {
 	r := mux.NewRouter();
@@ -145,7 +140,8 @@ func UserLoginHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	} else {
 		//issue jwt token
-		jwt := generateToken(user.Id, user.Role)
+		jwtToken := auth.JwtToken{}
+		jwt := jwtToken.GenerateToken(user.Id, user.Role)
 		jsonJwt = &JwtToken {
 			Token: jwt,
 			Status: true,
@@ -297,7 +293,8 @@ func AdminLoginHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	} else {
 		//issue jwt token
-		jwt := generateToken(user.Id, user.Role)
+		jwtToken := auth.JwtToken{}
+		jwt := jwtToken.GenerateToken(user.Id, user.Role)
 		jsonJwt = &JwtToken {
 			Token: jwt,
 			Status: true,
@@ -323,49 +320,6 @@ func CategoryCreateHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-/*
-
-Token
-
-*/
-
-func generateToken(Id int64, Role int) string {
-	//jwt token
-	token := jwt.New(jwt.SigningMethodHS256)
-	token.Claims["userId"] = Id
-	token.Claims["userRole"] = Role
-	token.Claims["exp"] = time.Now().Add(time.Hour * 72).Unix()
-	tokenString, err := token.SignedString(signString)
-
-	if err != nil {
-		//handle error
-		return ""
-	}
-
-	//return token
-	return tokenString
-}
-
-func parseToken(r *http.Request) (*jwt.Token, error) {
-	myToken :=r.Header.Get("User-Token")
-
-	token, err := jwt.Parse(myToken, func(token *jwt.Token) (interface{}, error) {
-
-		//verify signing type
-		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
-		}
-
-		return signString, nil
-	})
-
-	//return error or decoded token
-	if err == nil && token.Valid {
-		return token, nil
-	} else {
-		return nil, err
-	}
-}
 
 /*
 func testHandler(w http.ResponseWriter, r *http.Request) {
