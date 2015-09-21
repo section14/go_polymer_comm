@@ -1,0 +1,80 @@
+<!--
+
+This element queries a backend api for product categories to display
+
+-->
+
+<dom-module id="category-loader">
+
+    <style>
+        :host {
+            display: block;
+        }
+    </style>
+
+    <template>
+
+        <iron-ajax
+            id = "categoryList"
+            on-response = "handleRes"
+            on-error = "handleErr"
+        ></iron-ajax>
+
+        <div>
+            <template is="dom-repeat" items="{{categories}}">
+                <paper-button style="width: 300px;" on-tap="handleTap">
+                    <span>{{item.Name}}</span>
+                </paper-button>
+            </template>
+        </div>
+    </template>
+
+    <script>
+
+    Polymer({
+
+        is: "category-loader",
+
+        properties: {
+            url: {
+                type: String
+            },
+
+            currentCategory: {
+                type: String
+            }
+        },
+
+        ready: function() {
+            this.getCategories();
+        },
+
+        getCategories: function() {
+            //prepare ajax request
+            this.$.categoryList.url = this.formUrl;
+            this.$.categoryList.method = "GET";
+            this.$.categoryList.contentType = "application/json";
+            this.$.categoryList.handleAs = "json";
+            this.$.categoryList.debounceDuration = "500";
+
+            //submit request
+            this.$.categoryList.generateRequest();
+        },
+
+        handleTap: function() {
+            //set current category
+        },
+
+        handleRes: function() {
+            this.categories = this.$.categoryList.lastResponse;
+        },
+
+        handleErr: function() {
+            //handle error?
+        }
+
+    });
+
+    </script>
+
+</dom-module>

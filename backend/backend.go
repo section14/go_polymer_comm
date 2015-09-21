@@ -38,6 +38,7 @@ func init() {
 
 	//admin
 	r.HandleFunc("/api/admin/login", AdminLoginHandler).Methods("POST")
+	r.HandleFunc("/api/admin", AdminVerifyHandler).Methods("GET")
 
 	//product
 	r.HandleFunc("/api/category", CategoryCreateHandler).Methods("POST")
@@ -305,6 +306,17 @@ func AdminLoginHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, string(token))
 }
 
+func AdminVerifyHandler(w http.ResponseWriter, r *http.Request) {
+	auth := auth.Auth{}
+	status := auth.VerifyAdmin(r)
+
+	if status != true {
+		http.Error(w, "Invalid user", 400)
+	} else {
+		fmt.Fprint(w, true)
+	}
+}
+
 /*
 
 Category
@@ -317,6 +329,8 @@ func CategoryCreateHandler(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		log.Println(err)
+	} else {
+		fmt.Fprint(w, true)
 	}
 }
 

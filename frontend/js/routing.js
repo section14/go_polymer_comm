@@ -7,11 +7,18 @@ window.addEventListener("WebComponentsReady", function() {
         app.pageContent = "/app/general/home.html";
     });
 
+    //admin
     page('/admin', function() {
         app.route = "admin";
         app.pageContent = "/app/admin/dashboard.html";
     });
 
+    page('/admin/category', function() {
+        app.route = "admin";
+        app.pageContent = "/app/admin/category.html";
+    });
+
+    //account
     page('/account', function() {
         app.route = "account";
         app.pageContent = "/app/user/account.html";

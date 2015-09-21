@@ -31,6 +31,10 @@ Element to verify that user is an admin
 
             dialogName: {
                 type: String
+            },
+
+            pageData: {
+                type: String
             }
         },
 
@@ -40,6 +44,8 @@ Element to verify that user is an admin
 
         verifyAdmin: function() {
             var baseUrl;
+            //get user token
+            var userToken = localStorage.getItem("token");
 
             if (!window.location.origin)
             {
@@ -52,6 +58,7 @@ Element to verify that user is an admin
 
             this.$.adminCheck.url = baseUrl + this.verifyUrl;
             this.$.adminCheck.method = "GET";
+            this.$.adminCheck.headers = {"User-Token": userToken};
             this.$.adminCheck.handleAs = "json";
             this.$.adminCheck.debounceDuration = "500";
             this.$.adminCheck.generateRequest();

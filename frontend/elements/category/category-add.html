@@ -1,0 +1,93 @@
+<dom-module id="category-add">
+
+    <style>
+        :host{
+            display: block;
+            width: 500px;
+        }
+    </style>
+
+    <template>
+
+        <h2>Add A New Category</h2>
+
+        <iron-ajax
+            id = "categoryForm"
+            on-response = "handleRes"
+            on-error = "handleErr"
+        ></iron-ajax>
+
+        <form is="iron-form">
+
+            <paper-input-container id="category-name">
+                <paper-input-error>This field is required</paper-input-error>
+                <label>Category Name</label>
+                <input is="iron-input" value="{{nameInput::input}}">
+            </paper-input-container>
+
+            <paper-button raised on-tap="submitForm">Add New</paper-button>
+
+        </form>
+
+    </template>
+
+    <script>
+
+    Polymer ({
+
+        is: "category-add",
+
+        properties: {
+            formUrl: {
+                type: String
+            },
+
+            parentId: {
+                type: String
+            }
+        },
+
+        submitForm: function() {
+
+            //get user token
+            var userToken = localStorage.getItem("token");
+
+            //package form data
+            var formData = this.packageData();
+
+            //prepare ajax request
+            this.$.categoryForm.url = this.formUrl;
+            this.$.categoryForm.method = "POST";
+            this.$.categoryForm.headers = {"User-Token": userToken};
+            this.$.categoryForm.contentType = "application/json";
+            this.$.categoryForm.body = JSON.stringify(formData);
+            this.$.categoryForm.handleAs = "json";
+            this.$.categoryForm.debounceDuration = "500";
+
+            //submit request
+            this.$.categoryForm.generateRequest();
+
+        },
+
+        packageData: function() {
+            var formData = {
+                parentid: this.parentId,
+                name: this.nameInput
+            }
+
+            return formData;
+        },
+
+        handleRes: function() {
+
+        },
+
+        handleErr: function() {
+
+        }
+
+    });
+
+    </script>
+
+</dom-module>

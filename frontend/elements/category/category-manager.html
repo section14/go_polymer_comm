@@ -1,0 +1,35 @@
+<dom-module id="category-manager">
+
+    <style>
+        :host{
+            display: block;
+        }
+    </style>
+
+    <template>
+
+        <h1>Category Manager</h1>
+
+        <category-add form-url="/api/category" parent-id="{{currentCategory}}"></category-add>
+
+        <category-loader url="/api/category" current-category="{{currentCategory}}"></category-loader>
+
+    </template>
+
+    <script>
+
+    Polymer ({
+
+        is: "category-manager",
+
+        properties: {
+            currentCategory: {
+                type: String
+            }
+        }
+
+    });
+
+    </script>
+
+</dom-module>
