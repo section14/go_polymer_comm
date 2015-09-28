@@ -325,6 +325,9 @@ Category
 
 func CategoryCreateHandler(w http.ResponseWriter, r *http.Request) {
 	categoryController := controller.Category{}
+
+	status := categoryController.VerifyAdmin(r)
+
 	_, err := categoryController.CreateCategory(w,r)
 
 	if err != nil {
