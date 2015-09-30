@@ -307,8 +307,8 @@ func AdminLoginHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func AdminVerifyHandler(w http.ResponseWriter, r *http.Request) {
-	auth := auth.Auth{}
-	status := auth.VerifyAdmin(r)
+	adminAuth := auth.Auth{}
+	status := adminAuth.VerifyAdmin(r)
 
 	if status != true {
 		http.Error(w, "Invalid user", 400)
@@ -326,14 +326,19 @@ Category
 func CategoryCreateHandler(w http.ResponseWriter, r *http.Request) {
 	categoryController := controller.Category{}
 
-	status := categoryController.VerifyAdmin(r)
+	//verify user is admin
+	adminAuth := auth.Auth{}
+	status := adminAuth.VerifyAdmin(r)
 
-	_, err := categoryController.CreateCategory(w,r)
+	if status == true {
 
-	if err != nil {
-		log.Println(err)
-	} else {
-		fmt.Fprint(w, true)
+		_, err := categoryController.CreateCategory(r)
+
+		if err != nil {
+			log.Println(err)
+		} else {
+			fmt.Fprint(w, true)
+		}
 	}
 }
 
