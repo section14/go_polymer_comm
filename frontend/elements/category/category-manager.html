@@ -10,9 +10,9 @@
 
         <h1>Category Manager</h1>
 
-        <category-add form-url="/api/category" parent-id="{{currentCategory}}"></category-add>
+        <category-add form-url="/api/category" parent-id="{{parentCategory}}"></category-add>
 
-        <category-loader url="/api/category" current-category="{{currentCategory}}"></category-loader>
+        <category-loader url="/api/category" parent-category="{{parentCategory}}"></category-loader>
 
     </template>
 
@@ -23,7 +23,7 @@
         is: "category-manager",
 
         properties: {
-            currentCategory: {
+            parentCategory: {
                 type: String
             }
         }

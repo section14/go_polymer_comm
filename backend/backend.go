@@ -41,6 +41,7 @@ func init() {
 	r.HandleFunc("/api/admin", AdminVerifyHandler).Methods("GET")
 
 	//product
+	r.HandleFunc("/api/category", CategoryGetAllHandler).Methods("GET")
 	r.HandleFunc("/api/category", CategoryCreateHandler).Methods("POST")
 
 	//r.HandleFunc("/api/test/", testHandler)
@@ -342,6 +343,18 @@ func CategoryCreateHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func CategoryGetAllHandler(w http.ResponseWriter, r *http.Request) {
+	categoryController := controller.Category{}
+
+	categories, err := categoryController.GetCategories(r)
+
+	if err != nil {
+		log.Println(err)
+	} else {
+		jsonRes,_ := json.Marshal(categories)
+		fmt.Fprint(w, string(jsonRes))
+	}
+}
 
 /*
 func testHandler(w http.ResponseWriter, r *http.Request) {
