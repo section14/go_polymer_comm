@@ -81,7 +81,14 @@
 
         getList: function() {
             //get user token
-            var userToken = localStorage.getItem("token");
+            var userToken;
+
+            userToken = localStorage.getItem("token");
+
+            if (userToken == null || userToken == "undefined")
+            {
+                userToken = "empty";
+            }
 
             //prepare ajax request
             this.$.addressForm.url = this.formUrl;

@@ -44,7 +44,15 @@
                 baseUrl = window.location.origin;
             }
 
-            var userToken = localStorage.getItem("token");
+            //get user token
+            var userToken;
+
+            userToken = localStorage.getItem("token");
+
+            if (userToken == null || userToken == "undefined")
+            {
+                userToken = "empty";
+            }
 
             this.$.userCheck.url = baseUrl + this.verifyUrl;
             this.$.userCheck.method = "GET";

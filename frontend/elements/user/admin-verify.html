@@ -2,8 +2,6 @@
 Element to verify that user is an admin
 -->
 
-<link rel="import" href="/elements/admin-login-element.html"> <!-- not needed? -->
-
 <dom-module id="admin-verify">
 
     <template>
@@ -44,8 +42,16 @@ Element to verify that user is an admin
 
         verifyAdmin: function() {
             var baseUrl;
+
             //get user token
-            var userToken = localStorage.getItem("token");
+            var userToken;
+
+            userToken = localStorage.getItem("token");
+
+            if (userToken == null || userToken == "undefined")
+            {
+                userToken = "empty";
+            }
 
             if (!window.location.origin)
             {

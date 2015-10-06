@@ -44,8 +44,14 @@
 
             parentKey: {
                 type: String,
-                value: "0" //top level
+                value: "0",
+                notify: true,
+                observer: "keyChange"
             }
+        },
+
+        keyChange: function() {
+            console.log("peee on a log: " + this.parentKey);
         },
 
         submitForm: function() {
@@ -66,7 +72,7 @@
             this.$.categoryForm.debounceDuration = "500";
 
             //submit request
-            //this.$.categoryForm.generateRequest();
+            this.$.categoryForm.generateRequest();
 
         },
 
