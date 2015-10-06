@@ -10,7 +10,7 @@
 
         <h1>Category Manager</h1>
 
-        <category-add form-url="/api/category" parent-id="{{parentCategory}}"></category-add>
+        <category-add url="/api/category" parent-key="{{parentCategory}}"></category-add>
 
         <category-loader url="/api/category" parent-category="{{parentCategory}}"></category-loader>
 
@@ -24,8 +24,14 @@
 
         properties: {
             parentCategory: {
-                type: String
+                type: String,
+                notify: true,
+                observer: "parentChanged"
             }
+        },
+
+        parentChanged: function() {
+            console.log("parentChanged");
         }
 
     });

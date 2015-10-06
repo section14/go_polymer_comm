@@ -45,23 +45,22 @@ This element queries a backend api for product categories to display
             },
 
             parentCategory: {
-                type: Number,
-                value: 0 //top level
+                type: String,
+                value: "0" //top level
             }
         },
 
         ready: function() {
             //set parent category as empty
             this.getCategories();
+            console.log("parent bull: " + this.parentCategory);
         },
 
         getCategories: function() {
-            var wtf = this.parentCategory;
-
             //prepare ajax request
             this.$.categoryList.url = this.url;
             this.$.categoryList.method = "GET";
-            this.$.categoryList.headers = {"Parent-Category": wtf};
+            this.$.categoryList.headers = {"Parent-Category": this.parentCategory};
             this.$.categoryList.contentType = "application/json";
             this.$.categoryList.handleAs = "json";
             this.$.categoryList.debounceDuration = "500";
@@ -77,9 +76,9 @@ This element queries a backend api for product categories to display
             //set current (parent) category
             var itemId = model.item.Id;
             var itemKey = model.item.Key;
-            this.parentCategory = itemId;
+            this.parentCategory = itemKey;
 
-            console.log("Key: " + itemKey);
+            console.log("Key: " + this.parentCategory);
 
             this.getCategories();
         },

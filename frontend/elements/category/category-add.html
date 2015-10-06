@@ -38,12 +38,13 @@
         is: "category-add",
 
         properties: {
-            formUrl: {
+            url: {
                 type: String
             },
 
-            parentId: {
-                type: String
+            parentKey: {
+                type: String,
+                value: "0" //top level
             }
         },
 
@@ -56,7 +57,7 @@
             var formData = this.packageData();
 
             //prepare ajax request
-            this.$.categoryForm.url = this.formUrl;
+            this.$.categoryForm.url = this.url;
             this.$.categoryForm.method = "POST";
             this.$.categoryForm.headers = {"User-Token": userToken};
             this.$.categoryForm.contentType = "application/json";
@@ -65,15 +66,17 @@
             this.$.categoryForm.debounceDuration = "500";
 
             //submit request
-            this.$.categoryForm.generateRequest();
+            //this.$.categoryForm.generateRequest();
 
         },
 
         packageData: function() {
             var formData = {
-                parentid: this.parentId,
+                key: this.parentKey,
                 name: this.nameInput
             }
+
+            console.log(this.parentKey)
 
             return formData;
         },
