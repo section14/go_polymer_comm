@@ -48,13 +48,18 @@ This element queries a backend api for product categories to display
                 type: String,
                 value: "0",
                 notify: true
+            },
+
+            parentName: {
+                type: String,
+                value: "",
+                notify: true
             }
         },
 
         ready: function() {
             //set parent category as empty
             this.getCategories();
-            console.log("parent bull: " + this.parentCategory);
         },
 
         getCategories: function() {
@@ -74,13 +79,14 @@ This element queries a backend api for product categories to display
             //set local data model
             var model = e.model;
 
-            //set current (parent) category
+            //get item id's
             var itemId = model.item.Id;
-            var itemKey = model.item.Key;
-            this.parentCategory = itemKey;
+            var itemName = model.item.Name;
+            var itemParent = model.item.ParentId;
 
-            console.log("Key: " + this.parentCategory);
-
+            //set current id as parent id for the next category being created
+            this.parentCategory = itemId;
+            this.parentName = itemName;
             this.getCategories();
         },
 

@@ -10,9 +10,11 @@
 
         <h1>Category Manager</h1>
 
-        <category-add url="/api/category" parent-key="{{parentCategory}}"></category-add>
+        <category-breadcrumb parent-category="{{parentCategory}}" parent-name="{{parentName}}"></category-breadcrumb>
 
-        <category-loader url="/api/category" parent-category="{{parentCategory}}"></category-loader>
+        <category-add url="/api/category" parent-id="{{parentCategory}}"></category-add>
+
+        <category-loader url="/api/category" parent-category="{{parentCategory}}" parent-name="{{parentName}}"></category-loader>
 
     </template>
 
@@ -27,11 +29,25 @@
                 type: String,
                 notify: true,
                 observer: "parentChanged"
+            },
+
+            parentNotify: {
+                type: String
+            },
+
+            parentName: {
+                type: String,
+                notify: true,
+                observer: "nameChanged"
             }
         },
 
         parentChanged: function() {
-            console.log("parentChanged: ", this.parentCategory);
+            console.log("parentChanged: " + this.parentCategory);
+        },
+
+        nameChanged: function () {
+            console.log("name changed: " + this.parentName);
         }
 
     });

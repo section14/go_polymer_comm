@@ -42,7 +42,7 @@
                 type: String
             },
 
-            parentKey: {
+            parentId: {
                 type: String,
                 value: "0",
                 notify: true,
@@ -51,7 +51,7 @@
         },
 
         keyChange: function() {
-            console.log("peee on a log: " + this.parentKey);
+            //probably don't need this
         },
 
         submitForm: function() {
@@ -78,11 +78,9 @@
 
         packageData: function() {
             var formData = {
-                key: this.parentKey,
-                name: this.nameInput
+                name: this.nameInput,
+                parentid: this.parentId
             }
-
-            console.log(this.parentKey)
 
             return formData;
         },
