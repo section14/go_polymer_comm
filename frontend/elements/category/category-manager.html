@@ -10,7 +10,7 @@
 
         <h1>Category Manager</h1>
 
-        <category-breadcrumb parent-category="{{parentCategory}}" parent-name="{{parentName}}"></category-breadcrumb>
+        <category-breadcrumb parent-category="{{parentCategory}}" parent-name="{{breadCrumbName}}"></category-breadcrumb>
 
         <category-add url="/api/category" parent-id="{{parentCategory}}"></category-add>
 
@@ -26,7 +26,7 @@
 
         properties: {
             parentCategory: {
-                type: String,
+                type: Number,
                 notify: true,
                 observer: "parentChanged"
             },
@@ -39,11 +39,16 @@
                 type: String,
                 notify: true,
                 observer: "nameChanged"
+            },
+
+            breadCrumbName: {
+                type: String
             }
         },
 
         parentChanged: function() {
             console.log("parentChanged: " + this.parentCategory);
+            this.breadCrumbName = this.parentName;
         },
 
         nameChanged: function () {
