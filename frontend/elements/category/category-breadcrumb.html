@@ -23,6 +23,7 @@
             parentName: {
                 type: String,
                 notify: true,
+                observer: "shitName"
             }
         },
 
@@ -31,6 +32,11 @@
 
             //breadcrumb array
             this.crumbList = [];
+        },
+
+        shitName: function() {
+            console.log("shit name: " + this.parentName);
+            this.addBreadCrumb();
         },
 
         manageBreadcrumb: function() {
@@ -48,7 +54,7 @@
             //add new category
             if (matchCat == false)
             {
-                this.addBreadCrumb();
+                //this.addBreadCrumb();
             }
         },
 

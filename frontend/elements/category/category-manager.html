@@ -10,7 +10,7 @@
 
         <h1>Category Manager</h1>
 
-        <category-breadcrumb parent-category="{{parentCategory}}" parent-name="{{breadCrumbName}}"></category-breadcrumb>
+        <category-breadcrumb parent-category="{{parentCategory}}" parent-name="{{parentName}}"></category-breadcrumb>
 
         <category-add url="/api/category" parent-id="{{parentCategory}}"></category-add>
 
@@ -31,28 +31,19 @@
                 observer: "parentChanged"
             },
 
-            parentNotify: {
-                type: String
-            },
-
             parentName: {
                 type: String,
                 notify: true,
                 observer: "nameChanged"
             },
-
-            breadCrumbName: {
-                type: String
-            }
         },
 
         parentChanged: function() {
-            console.log("parentChanged: " + this.parentCategory);
-            this.breadCrumbName = this.parentName;
+            //this is always one step behind
         },
 
         nameChanged: function () {
-            console.log("name changed: " + this.parentName);
+            //this updates on time
         }
 
     });
