@@ -27,23 +27,13 @@
         properties: {
             parentCategory: {
                 type: Number,
-                notify: true,
-                observer: "parentChanged"
+                notify: true
             },
 
             parentName: {
                 type: String,
-                notify: true,
-                observer: "nameChanged"
+                notify: true
             },
-        },
-
-        parentChanged: function() {
-            //this is always one step behind
-        },
-
-        nameChanged: function () {
-            //this updates on time
         }
 
     });

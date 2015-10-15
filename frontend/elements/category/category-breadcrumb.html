@@ -17,13 +17,12 @@
             parentCategory: {
                 type: Number,
                 notify: true,
-                observer: "manageBreadcrumb"
+                observer: "depthChange"
             },
 
             parentName: {
                 type: String,
-                notify: true,
-                observer: "shitName"
+                notify: true
             }
         },
 
@@ -34,12 +33,13 @@
             this.crumbList = [];
         },
 
-        shitName: function() {
-            console.log("shit name: " + this.parentName);
-            this.addBreadCrumb();
+        depthChange: function() {
+            this.async(function() {
+                this.manageBreadCrumb()
+            }, 100);
         },
 
-        manageBreadcrumb: function() {
+        manageBreadCrumb: function() {
             var matchCat = false;
 
             //check if this category is already in the list
@@ -54,13 +54,11 @@
             //add new category
             if (matchCat == false)
             {
-                //this.addBreadCrumb();
+                this.addBreadCrumb();
             }
         },
 
         addBreadCrumb: function() {
-            console.log("made it here, name: " + this.parentName);
-
             if (this.parentName != undefined && this.parentName != "")
             {
                 this.breadText += " -> " + this.parentName;
