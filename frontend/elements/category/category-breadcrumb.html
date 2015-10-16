@@ -30,8 +30,6 @@
         },
 
         ready: function() {
-            this.breadText = "Root";
-
             //breadcrumb array
             this.crumbList = [];
         },
@@ -46,7 +44,7 @@
             var matchCat = false;
 
             //check if this category is already in the list
-            for (i = 0; i< this.crumbList.length; i++)
+            for (i=0; i<this.crumbList.length; i++)
             {
                 if (this.parentCategory == this.crumbList[i])
                 {
@@ -64,25 +62,22 @@
         addBreadCrumb: function() {
             if (this.parentName != undefined && this.parentName != "")
             {
+                //add category to id to breadcrumb list
+                this.crumbList.push(this.parentCategory);
+
+                //create new breadcrumb button
                 var newButton = document.createElement("paper-button");
-                newButton.raised = true;
                 newButton.innerHTML = this.parentName;
-                newButton.addEventListener("tap",this.testThing);
+                newButton.id = this.parentCategory;
+                newButton.raised = true;
+                newButton.addEventListener("tap",this.changeCategory.bind(this));
 
-                //container div to hold imported document
-                //var container = document.createElement("div");
-                //var importedNode = document.importNode(template.content, true);
-                //container.appendChild(importedNode);
-
-                //add import document to local DOM and add a reference to it
-                //this.currentContent = container;
                 Polymer.dom(this.$.bread_buttons).appendChild(newButton);
-                //this.breadText += " -> " + this.parentName;
             }
         },
 
-        testThing: function () {
-        console.log("yo broooss");
+        changeCategory: function() {
+            console.log(this.crumbList);
         },
 
         deleteBreadCrumb: function() {
