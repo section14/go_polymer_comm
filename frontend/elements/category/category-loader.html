@@ -10,6 +10,10 @@ This element queries a backend api for product categories to display
         :host {
             display: block;
         }
+
+        .delete {
+            background-color: red;
+        }
     </style>
 
     <template>
@@ -26,6 +30,9 @@ This element queries a backend api for product categories to display
                     <li>
                         <paper-button style="width: 300px;" on-tap="handleTap">
                             <span>{{item.Name}}</span>
+                        </paper-button>
+                        <paper-button style="width: 100px;" class="delete" on-tap="deleteCat">
+                            <span>Delete</span>
                         </paper-button>
                     </li>
                 </template>
@@ -47,26 +54,47 @@ This element queries a backend api for product categories to display
             parentCategory: {
                 type: Number,
                 value: 0,
-                notify: true
+                notify: true,
             },
 
             parentName: {
                 type: String,
                 value: "",
                 notify: true
+            },
+
+            breadCrumbIn: {
+                type: Number,
+                value: 0,
+                notify: true,
+                observer: "getAsync"
             }
         },
 
         ready: function() {
-            //set parent category as empty
+            //Variable for handling category requests. Request can originate from an internal click
+            //or from a breadcrumb element. Change this var as needed.
+            this.categoryId = this.parentCategory;
             this.getCategories();
+        },
+
+        getAsync: function() {
+            this.categoryId = this.breadCrumbIn;
+
+            if (this.categoryId != undefined && this.categoryId != "")
+            {
+                console.log("bread in on loader: " + this.categoryId);
+                this.async(function() {
+                    this.getCategories()
+                }, 10);
+            }
         },
 
         getCategories: function() {
             //prepare ajax request
             this.$.categoryList.url = this.url;
             this.$.categoryList.method = "GET";
-            this.$.categoryList.headers = {"Parent-Category": this.parentCategory};
+            this.$.categoryList.headers = {"Parent-Category": this.categoryId};
             this.$.categoryList.contentType = "application/json";
             this.$.categoryList.handleAs = "json";
             this.$.categoryList.debounceDuration = "500";
@@ -87,6 +115,9 @@ This element queries a backend api for product categories to display
             //set current id as parent id for the next category being created
             this.parentCategory = itemId;
             this.parentName = itemName;
+            this.categoryId = itemId;
+
+            console.log("loader: " + itemId);
 
             this.getCategories();
         },

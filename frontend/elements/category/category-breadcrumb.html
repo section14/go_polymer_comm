@@ -7,7 +7,11 @@
     </style>
 
     <template>
-        <div id="bread_buttons"></div>
+        <div id="bread_buttons">
+            <template is="dom-repeat" items="{{crumbList}}">
+                <paper-button on-tap="changeCategory">{{item.name}}</paper-button>
+            </template>
+        </div>
     </template>
 
     <script>
@@ -17,10 +21,15 @@
         is: "category-breadcrumb",
 
         properties: {
-            parentCategory: {
+            categoryIn: {
                 type: Number,
                 notify: true,
                 observer: "depthChange"
+            },
+
+            categoryOut: {
+                type: Number,
+                notify: true,
             },
 
             parentName: {
@@ -40,13 +49,13 @@
             }, 100);
         },
 
-        manageBreadCrumb: function() {
+        manageBreadCrumb: function(e) {
             var matchCat = false;
 
             //check if this category is already in the list
             for (i=0; i<this.crumbList.length; i++)
             {
-                if (this.parentCategory == this.crumbList[i])
+                if (this.categoryIn == this.crumbList[i])
                 {
                     matchCat = true;
                 }
@@ -62,31 +71,7 @@
         addBreadCrumb: function() {
             if (this.parentName != undefined && this.parentName != "")
             {
-                //add category to id to breadcrumb list
-                this.crumbList.push(this.parentCategory);
-
-                var newButton = Polymer.Base.create(
-                    "paper-button",
-                    {"catId":this.parentCategory}
-                );
-
-                newButton.innerHTML = this.parentName;
-                newButton.catId = this.parentCategory;
-                newButton.addEventListener("tap",this.changeCategory.bind(this));
-
-                //var model = 
-
-                //create new breadcrumb button
-                /*
-                var newButton = document.createElement("paper-button");
-                newButton.innerHTML = this.parentName;
-                newButton.id = this.parentCategory;
-                newButton.raised = true;
-                newButton.addEventListener("tap",this.changeCategory.bind(this));
-                */
-
-                Polymer.dom(this.$.bread_buttons).appendChild(newButton);
-
+                this.push("crumbList", {id : this.categoryIn, name : this.parentName});
             }
         },
 
@@ -94,14 +79,36 @@
             //set local data model
             var model = e.model;
 
-            //get item id's
-            //var itemId = model.item.catId;
+            //get breadcrumb id and index
+            var id = model.item.id;
+            var index = model.index;
 
-            console.log(e.catId);
-        },
+            //remove all breadcrumbs after this one //
 
-        deleteBreadCrumb: function() {
+            //count total breadcrumbs
+            var totalCrumbs = this.crumbList.length;
 
+            //subtract this index from total
+            var crumbLocation = (totalCrumbs - index) - 1;
+
+            //remove breadcrumbs
+            for (i=0; i<crumbLocation; i++)
+            {
+                this.pop("crumbList");
+            }
+
+            //get last item and load category
+            var lastIndex = this.crumbList.length-1;
+            var lastItem = this.crumbList[lastIndex];
+
+            console.log("crumb: " + lastItem.name);
+
+            //load category just clicked on
+
+            //set to empty as a way to force an observer update in case it doesn't change
+            //find away to do this natively
+            this.categoryOut = "";
+            this.categoryOut = lastItem.id;
         }
 
     });

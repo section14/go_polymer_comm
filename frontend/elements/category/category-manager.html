@@ -10,11 +10,20 @@
 
         <h1>Category Manager</h1>
 
-        <category-breadcrumb parent-category="{{parentCategory}}" parent-name="{{parentName}}"></category-breadcrumb>
+        <category-breadcrumb
+        category-in="{{parentCategory}}"
+        category-out="{{breadCrumbCategory}}"
+        parent-name="{{parentName}}"></category-breadcrumb>
 
-        <category-add url="/api/category" parent-id="{{parentCategory}}"></category-add>
+        <category-add
+        url="/api/category"
+        parent-id="{{parentCategory}}"></category-add>
 
-        <category-loader url="/api/category" parent-category="{{parentCategory}}" parent-name="{{parentName}}"></category-loader>
+        <category-loader
+        url="/api/category"
+        parent-category="{{parentCategory}}"
+        bread-crumb-in="{{breadCrumbCategory}}"
+        parent-name="{{parentName}}"></category-loader>
 
     </template>
 
@@ -30,10 +39,20 @@
                 notify: true
             },
 
+            breadCrumbCategory: {
+                type: Number,
+                notify: true,
+                observer: "testThang"
+            },
+
             parentName: {
                 type: String,
                 notify: true
             },
+        },
+
+        testThang: function() {
+            console.log("manager: " + this.breadCrumbCategory);
         }
 
     });
