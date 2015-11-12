@@ -43,6 +43,7 @@ func init() {
 	//product
 	r.HandleFunc("/api/category", CategoryGetAllHandler).Methods("GET")
 	r.HandleFunc("/api/category", CategoryCreateHandler).Methods("POST")
+	r.HandleFunc("/api/product", ProductCreateHandler).Methods("POST")
 
 	//r.HandleFunc("/api/test/", testHandler)
 
@@ -353,6 +354,24 @@ func CategoryGetAllHandler(w http.ResponseWriter, r *http.Request) {
 	} else {
 		jsonRes,_ := json.Marshal(categories)
 		fmt.Fprint(w, string(jsonRes))
+	}
+}
+
+func ProductCreateHandler(w http.ResponseWriter, r *http.Request) {
+	productController := controller.Product{}
+
+	//verify user is admin
+	adminAuth := auth.Auth{}
+	status := adminAuth.VerifyAdmin(r)
+
+	if status == true {
+		err := productController.CreateProduct(r)
+
+		if err != nil {
+			log.Println(err)
+		} else {
+			fmt.Fprint(w, true)
+		}
 	}
 }
 

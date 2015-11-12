@@ -1,16 +1,104 @@
 <dom-module id="product-add">
 
     <style>
+        :host{
+            display: block;
+            width: 500px;
+        }
     </style>
 
     <template>
+
+        <iron-ajax
+            id = "productForm"
+            on-response = "handleRes"
+            on-error = "handleErr"
+        ></iron-ajax>
+
+        <form is="iron-form">
+
+            <paper-input-container id="title">
+                <paper-input-error>This field is required</paper-input-error>
+                <label>Title</label>
+                <input is="iron-input" value="{{titleInput::input}}">
+            </paper-input-container>
+
+            <paper-input-container id="sku">
+                <paper-input-error>This field is required</paper-input-error>
+                <label>Sku</label>
+                <input is="iron-input" value="{{skuInput::input}}">
+            </paper-input-container>
+
+            <paper-input-container id="desc">
+                <paper-input-error>This field is required</paper-input-error>
+                <label>Description</label>
+                <input is="iron-input" value="{{descInput::input}}">
+            </paper-input-container>
+
+            <paper-button raised on-tap="submitForm">Add New</paper-button>
+
+        </form>
+
     </template>
 
     <script>
 
     Polymer({
 
-        is: "product-add"
+        is: "product-add",
+
+        properties: {
+            url: {
+                type: String
+            },
+
+            category: {
+                type: Number,
+                value: 0
+            }
+        },
+
+        submitForm: function() {
+
+            //get user token
+            var userToken = localStorage.getItem("token");
+
+            //package form data
+            var formData = this.packageData();
+
+            //prepare ajax request
+            this.$.productForm.url = this.url;
+            this.$.productForm.method = "POST";
+            this.$.productForm.headers = {"User-Token": userToken};
+            this.$.productForm.contentType = "application/json";
+            this.$.productForm.body = JSON.stringify(formData);
+            this.$.productForm.handleAs = "json";
+            this.$.productForm.debounceDuration = "500";
+
+            //submit request
+            this.$.productForm.generateRequest();
+
+        },
+
+        packageData: function() {
+            var formData = {
+                title: this.titleInput,
+                sku: this.skuInput,
+                desc: this.descInput,
+                image: "test.jpg",
+                category: this.category
+            }
+
+            return formData;
+        },
+
+        handleRes: function() {
+
+        },
+
+        handleErr: function() {
+
+        }
 
     });
 
