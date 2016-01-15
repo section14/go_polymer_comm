@@ -1,0 +1,35 @@
+<dom-module id="product-manager">
+
+    <style>
+        :host{
+            display: block;
+        }
+    </style>
+
+    <template>
+
+        <h1>Product Manager</h1>
+
+        <h2>Add a New Product</h2>
+
+        <product-add
+        url="/api/product"
+        category="/api/category"></product-add>
+
+    </template>
+
+    <script>
+
+    Polymer ({
+
+        is: "product-manager",
+
+        properties: {
+
+        },
+
+    });
+
+    </script>
+
+</dom-module>

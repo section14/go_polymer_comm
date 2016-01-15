@@ -18,6 +18,11 @@ window.addEventListener("WebComponentsReady", function() {
         app.pageContent = "/app/admin/category.html";
     });
 
+    page('/admin/product', function() {
+        app.route = "admin";
+        app.pageContent = "/app/admin/product.html";
+    });
+
     //account
     page('/account', function() {
         app.route = "account";

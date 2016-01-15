@@ -5,6 +5,11 @@
             display: block;
             width: 500px;
         }
+
+        .iron-selected {
+          background-color: var(--google-blue-500);
+          color: white;
+        }
     </style>
 
     <template>
@@ -16,6 +21,12 @@
         ></iron-ajax>
 
         <form is="iron-form">
+
+            <iron-selector selected="0" multi>
+                <template is="dom-repeat" items="{{donk}}">
+                    <div>First name: <span>{{item.first}}</span></div>
+                </template>
+            </iron-selector>
 
             <paper-input-container id="title">
                 <paper-input-error>This field is required</paper-input-error>
@@ -47,15 +58,17 @@
 
         is: "product-add",
 
+        ready: function() {
+            this.donk = [
+      {first: 'Bob', last: 'Smith'},
+      {first: 'Sally', last: 'Johnson'},
+  ];
+        },
+
         properties: {
             url: {
                 type: String
             },
-
-            category: {
-                type: Number,
-                value: 0
-            }
         },
 
         submitForm: function() {
