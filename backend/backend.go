@@ -44,15 +44,7 @@ func init() {
 	r.HandleFunc("/api/category", CategoryGetAllHandler).Methods("GET")
 	r.HandleFunc("/api/category", CategoryCreateHandler).Methods("POST")
 	r.HandleFunc("/api/product", ProductCreateHandler).Methods("POST")
-
-	//r.HandleFunc("/api/test/", testHandler)
-
-	/*
-	r.HandleFunc("/api/bro/", broHandler)
-	r.HandleFunc("/api/flo/", floHandler)
-	r.HandleFunc("/api/upt/", updateHandler)
-	r.HandleFunc("/api/del/", deleteHandler)
-	*/
+	r.HandleFunc("/api/product", ProductGetHandler).Methods("GET")
 
 	http.Handle("/", r)
 }
@@ -346,7 +338,6 @@ func CategoryCreateHandler(w http.ResponseWriter, r *http.Request) {
 
 func CategoryGetAllHandler(w http.ResponseWriter, r *http.Request) {
 	categoryController := controller.Category{}
-
 	categories, err := categoryController.GetCategories(r)
 
 	if err != nil {
@@ -375,6 +366,18 @@ func ProductCreateHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func ProductGetHandler(w http.ResponseWriter, r *http.Request) {
+	productController := controller.Product{}
+	product, err := productController.GetProduct(r)
+
+	if err != nil {
+		log.Println(err)
+	} else {
+		jsonRes,_ := json.Marshal(product)
+		fmt.Fprint(w, string(jsonRes))
+	}
+}
+
 /*
 func testHandler(w http.ResponseWriter, r *http.Request) {
 	userModel := model.User {
@@ -389,58 +392,5 @@ func testHandler(w http.ResponseWriter, r *http.Request) {
 		//hanle error
 		log.Println(err)
 	}
-}
-*/
-
-/*
-
-func broHandler(w http.ResponseWriter, r *http.Request) {
-	userModel := model.User{}
-
-	res, err := userModel.GetAllUsers(w,r)
-
-	if err != nil {
-		//hanle error
-	}
-
-	fmt.Fprint(w, res)
-}
-
-func floHandler(w http.ResponseWriter, r *http.Request) {
-	userModel := model.User{}
-
-	res, err := userModel.GetUser(w,r,6192449487634432)
-
-	if err != nil {
-		//hanle error
-	}
-
-	fmt.Fprint(w, res)
-}
-
-func updateHandler(w http.ResponseWriter, r *http.Request) {
-	userModel := model.User{}
-
-	err := userModel.UpdateEmail(w,r,6192449487634432,"oboes-never-gojos")
-
-	if err != nil {
-		//hanle error
-		log.Println(err)
-	}
-}
-
-func deleteHandler(w http.ResponseWriter, r *http.Request) {
-	userModel := model.User{}
-
-	err := userModel.DeleteUser(w,r,5838406743490560)
-
-	if err != nil {
-		//handle error
-	}
-}
-
-func adminHander(w http.ResponseWriter, r *http.Request) {
-	//need to make sure user is logged in before they can get here
-	//just return a 500, omit error
 }
 */

@@ -1,9 +1,20 @@
 <dom-module id="product-load">
 
     <style>
+        :host{
+            display: block;
+            width: 500px;
+        }
     </style>
 
     <template>
+        <iron-ajax
+            id = "productReq"
+            on-response = "handleRes"
+            on-error = "handleErr"
+        ></iron-ajax>
+
+        <div></<div>
     </template>
 
     <script>
@@ -12,13 +23,45 @@
 
         is: "product-load",
 
-        /*
+        properties: {
+            url: {
+                type: String
+            },
 
-        Figure out if you want data like title, desc, images, etc. passed in. Or, do you want
-        to pass an id which grabs it all from the database. Probably id for the detail view,
-        and an array for the category list of parts.
+            prodId: {
+                type: String //int?
+            },
 
-        */
+            ready: function() {
+                this.getProduct();
+            },
+
+            getProduct: function() {
+                //prepare ajax request
+                this.$.productReq.url = this.url + "/" + prodId;
+                this.$.productReq.method = "GET";
+                this.$.productReq.contentType = "application/json";
+                this.$.productReq.handleAs = "json";
+                this.$productReq.debounceDuration = "500";
+
+                //submit request
+                this.$.productReq.generateRequest();
+
+                /*
+
+                Figure out how to grab the id from the url in Gorilla mux in backend.go
+
+                */
+            },
+
+            handleRes: function() {
+                console.log(this.$.productReq.lastResponse);
+            },
+
+            handleErr: function() {
+                //handle error?
+            }
+        }
 
     });
 
