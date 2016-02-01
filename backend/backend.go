@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"encoding/json"
 	"log"
+	"strconv"
 	//"appengine"
 
 	//third party
@@ -44,7 +45,7 @@ func init() {
 	r.HandleFunc("/api/category", CategoryGetAllHandler).Methods("GET")
 	r.HandleFunc("/api/category", CategoryCreateHandler).Methods("POST")
 	r.HandleFunc("/api/product", ProductCreateHandler).Methods("POST")
-	r.HandleFunc("/api/product", ProductGetHandler).Methods("GET")
+	r.HandleFunc("/api/product/{id}", ProductGetHandler).Methods("GET")
 
 	http.Handle("/", r)
 }
@@ -367,8 +368,18 @@ func ProductCreateHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func ProductGetHandler(w http.ResponseWriter, r *http.Request) {
+	//product id
+	vars := mux.Vars(r)
+	strId := vars["id"]
+
+	id, err := strconv.ParseInt(strId, 10, 64)
+
+	if err != nil {
+		log.Println(err)
+	}
+
 	productController := controller.Product{}
-	product, err := productController.GetProduct(r)
+	product, err := productController.GetProduct(r, id)
 
 	if err != nil {
 		log.Println(err)

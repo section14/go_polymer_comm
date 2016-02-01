@@ -5,6 +5,14 @@
             display: block;
             width: 500px;
         }
+
+        .box {
+            float: left;
+            width: 500px;
+            padding: 10px;
+            margin: 0px 0px 20px 0px;
+            background-color: #ccc;
+        }
     </style>
 
     <template>
@@ -14,7 +22,11 @@
             on-error = "handleErr"
         ></iron-ajax>
 
-        <div></<div>
+        <div class="box">
+            <div><span>{{data.Title}}</span></div>
+            <div><span>{{data.Sku}}</span></div>
+            <div><span>{{data.Desc}}</span></div>
+        </div>
     </template>
 
     <script>
@@ -29,38 +41,38 @@
             },
 
             prodId: {
-                type: String //int?
+                type: String
             },
 
-            ready: function() {
-                this.getProduct();
-            },
-
-            getProduct: function() {
-                //prepare ajax request
-                this.$.productReq.url = this.url + "/" + prodId;
-                this.$.productReq.method = "GET";
-                this.$.productReq.contentType = "application/json";
-                this.$.productReq.handleAs = "json";
-                this.$productReq.debounceDuration = "500";
-
-                //submit request
-                this.$.productReq.generateRequest();
-
-                /*
-
-                Figure out how to grab the id from the url in Gorilla mux in backend.go
-
-                */
-            },
-
-            handleRes: function() {
-                console.log(this.$.productReq.lastResponse);
-            },
-
-            handleErr: function() {
-                //handle error?
+            data: {
+                type: Object
             }
+
+        },
+
+        ready: function() {
+            this.getProduct();
+        },
+
+        getProduct: function() {
+            //prepare ajax request
+            this.$.productReq.url = this.url + "/" + this.prodId;
+            this.$.productReq.method = "GET";
+            this.$.productReq.contentType = "application/json";
+            this.$.productReq.handleAs = "json";
+            this.$.productReq.debounceDuration = "500";
+
+            //submit request
+            this.$.productReq.generateRequest();
+        },
+
+        handleRes: function() {
+            this.data = this.$.productReq.lastResponse;
+            console.log(this.$.productReq.lastResponse);
+        },
+
+        handleErr: function() {
+            console.log("something messed up");
         }
 
     });

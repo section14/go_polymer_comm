@@ -1,0 +1,98 @@
+<!--
+
+This element returns a list of all categories and sub-categories
+in a multi-select list box
+
+-->
+
+<dom-module id="category-list">
+
+    <style>
+    :host {
+        display: block;
+    }
+    </style>
+
+    <template>
+
+        <iron-ajax
+            id = "categoryList"
+            on-response = "handleRes"
+            on-error = "handleErr"
+        ></iron-ajax>
+
+        <select name="select">
+            <template is="dom-repeat" items="{{categories}}">
+                <option value="item.id">item.Name</option>
+            </template>
+        </select>
+
+    </template>
+
+    <script>
+
+    Polymer({
+
+        is: "category-list",
+
+        properties: {
+            url: {
+                type: String
+            },
+
+            result: {
+                type: Array
+            }
+        },
+
+        ready: function(){
+
+        },
+
+        getCategories: function() {
+            //prepare ajax request
+            this.$.categoryList.url = this.url;
+            this.$.categoryList.method = "GET";
+            this.$.categoryList.headers = {"Parent-Category": this.categoryId};
+            this.$.categoryList.contentType = "application/json";
+            this.$.categoryList.handleAs = "json";
+            this.$.categoryList.debounceDuration = "500";
+
+            //submit request
+            this.$.categoryList.generateRequest();
+        },
+
+        handleTap: function(e) {
+            //set local data model
+            var model = e.model;
+
+            //get item id's
+            var itemId = model.item.Id;
+            var itemName = model.item.Name;
+            var itemParent = model.item.ParentId;
+
+            //set current id as parent id for the next category being created
+            this.parentCategory = itemId;
+            this.parentName = itemName;
+            this.categoryId = itemId;
+
+            this.getCategories();
+        },
+
+        handleRes: function() {
+            this.categories = this.$.categoryList.lastResponse;
+
+            this.categories.forEach(function(elem,index,arr){
+                console.log(elem.Products.length);
+            });
+        },
+
+        handleErr: function() {
+            //handle error?
+        }
+
+    });
+
+    </script>
+
+</dom-module>

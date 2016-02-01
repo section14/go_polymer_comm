@@ -122,6 +122,10 @@ This element queries a backend api for product categories to display
 
         handleRes: function() {
             this.categories = this.$.categoryList.lastResponse;
+
+            this.categories.forEach(function(elem,index,arr){
+                console.log(elem.Products.length);
+            });
         },
 
         handleErr: function() {
