@@ -46,14 +46,13 @@ in a multi-select list box
         },
 
         ready: function(){
-
+            this.getCategories();
         },
 
         getCategories: function() {
             //prepare ajax request
             this.$.categoryList.url = this.url;
             this.$.categoryList.method = "GET";
-            this.$.categoryList.headers = {"Parent-Category": this.categoryId};
             this.$.categoryList.contentType = "application/json";
             this.$.categoryList.handleAs = "json";
             this.$.categoryList.debounceDuration = "500";
@@ -82,9 +81,11 @@ in a multi-select list box
         handleRes: function() {
             this.categories = this.$.categoryList.lastResponse;
 
-            this.categories.forEach(function(elem,index,arr){
-                console.log(elem.Products.length);
-            });
+            console.log(this.categories);
+
+            //this.categories.forEach(function(elem,index,arr){
+            //    console.log(elem.Products.length);
+            //});
         },
 
         handleErr: function() {
