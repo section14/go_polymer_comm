@@ -42,7 +42,8 @@ func init() {
 	r.HandleFunc("/api/admin", AdminVerifyHandler).Methods("GET")
 
 	//product
-	r.HandleFunc("/api/category", CategoryGetAllHandler).Methods("GET")
+	r.HandleFunc("/api/category", CategoriesGetHandler).Methods("GET")
+	r.HandleFunc("/api/category/all", CategoriesGetAllHandler).Methods("GET")
 	r.HandleFunc("/api/category/tree", CategoryGetTree).Methods("GET")
 	r.HandleFunc("/api/category", CategoryCreateHandler).Methods("POST")
 	r.HandleFunc("/api/product", ProductCreateHandler).Methods("POST")
@@ -338,7 +339,7 @@ func CategoryCreateHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func CategoryGetAllHandler(w http.ResponseWriter, r *http.Request) {
+func CategoriesGetHandler(w http.ResponseWriter, r *http.Request) {
 	categoryController := controller.Category{}
 	categories, err := categoryController.GetCategories(r)
 
@@ -350,9 +351,21 @@ func CategoryGetAllHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func CategoriesGetAllHandler(w http.ResponseWriter, r *http.Request) {
+	categoryController := controller.Category{}
+	categories, err := categoryController.GetAllCategories(r)
+
+	if err != nil {
+		log.Println(err)
+	} else {
+		jsonRes,_ := json.Marshal(categories)
+		fmt.Fprint(w, string(jsonRes))
+	}
+}
+
 func CategoryGetTree(w http.ResponseWriter, r *http.Request) {
 	categoryController := controller.Category{}
-	categories, err := categoryController.GetCategoryTree(r)
+	categories, err := categoryController.GetCategoryTree(r, 0)
 
 	if err != nil {
 		log.Println(err)
