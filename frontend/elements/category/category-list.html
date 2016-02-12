@@ -61,31 +61,33 @@ in a multi-select list box
             this.$.categoryList.generateRequest();
         },
 
-        handleTap: function(e) {
-            //set local data model
-            var model = e.model;
+        buildMenu: function(items) {
+            var node = new Array();
 
-            //get item id's
-            var itemId = model.item.Id;
-            var itemName = model.item.Name;
-            var itemParent = model.item.ParentId;
+            items.forEach(function(elem,index,arr) {
+                node.push(elem.Name);
 
-            //set current id as parent id for the next category being created
-            this.parentCategory = itemId;
-            this.parentName = itemName;
-            this.categoryId = itemId;
+                if (elem.SubBranch.length > 0) {
+                    return this.buildMenu(elem.SubBranch);
+                }
+            });
 
-            this.getCategories();
+            return node;
         },
 
         handleRes: function() {
-            this.categories = this.$.categoryList.lastResponse;
+            this.response = this.$.categoryList.lastResponse;
+            this.menuItems = this.buildMenu(this.response);
+
+            this.categories = this.menuItems;
 
             console.log(this.categories);
 
-            //this.categories.forEach(function(elem,index,arr){
-            //    console.log(elem.Products.length);
-            //});
+            /*
+            this.categories.forEach(function(elem,index,arr){
+                console.log(elem);
+            });
+            */
         },
 
         handleErr: function() {
