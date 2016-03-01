@@ -22,12 +22,6 @@
 
         <form is="iron-form">
 
-            <iron-selector selected="0" multi>
-                <template is="dom-repeat" items="{{donk}}">
-                    <div>First name: <span>{{item.first}}</span></div>
-                </template>
-            </iron-selector>
-
             <category-list url="/api/category/tree"></category-list>
 
             <paper-input-container id="title">
@@ -61,10 +55,7 @@
         is: "product-add",
 
         ready: function() {
-            this.donk = [
-      {first: 'Bob', last: 'Smith'},
-      {first: 'Sally', last: 'Johnson'},
-  ];
+
         },
 
         properties: {

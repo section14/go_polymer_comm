@@ -21,9 +21,9 @@ in a multi-select list box
             on-error = "handleErr"
         ></iron-ajax>
 
-        <select name="select">
+        <select name="select" multiple>
             <template is="dom-repeat" items="{{categories}}">
-                <option value="item.id">item.Name</option>
+                <option value="{{item.Id}}"><span>{{item.Name}}</span></option>
             </template>
         </select>
 
@@ -64,13 +64,22 @@ in a multi-select list box
         buildMenu: function(items) {
             var node = new Array();
 
+            /*
+
+            Make a new array object with proper field names
+
+            var otherNode = '[{"Name" : ' + elem.Name + '}]';
+
+            */
+
             items.forEach(function(elem,index,arr) {
-                node.push(elem.Name);
+                node.push(elem);
 
                 if (elem.SubBranch.length > 0) {
-                    return this.buildMenu(elem.SubBranch);
+                    var innerNode = this.buildMenu(elem.SubBranch);
+                    node.push(innerNode);
                 }
-            });
+            }, this);
 
             return node;
         },
