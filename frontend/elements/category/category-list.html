@@ -23,7 +23,7 @@ in a multi-select list box
 
         <select name="select" multiple>
             <template is="dom-repeat" items="{{categories}}">
-                <option value="{{item.Id}}"><span>{{item.Name}}</span></option>
+                <option value="{{item.id}}">{{item.name}}</option>
             </template>
         </select>
 
@@ -46,6 +46,8 @@ in a multi-select list box
         },
 
         ready: function(){
+            this.categories = new Array();
+            this.depth = 0;
             this.getCategories();
         },
 
@@ -61,42 +63,28 @@ in a multi-select list box
             this.$.categoryList.generateRequest();
         },
 
-        buildMenu: function(items) {
-            var node = new Array();
-
-            /*
-
-            Make a new array object with proper field names
-
-            var otherNode = '[{"Name" : ' + elem.Name + '}]';
-
-            */
+        buildArrays: function(items) {
+            //when you build the menu, do this to keep track of indents
+            // if (elem.SubBranch.length > 0) { indent count++;} else { if indentcount > 0 {indentcount--;}}
 
             items.forEach(function(elem,index,arr) {
-                node.push(elem);
+                this.addMenuItem(elem);
 
                 if (elem.SubBranch.length > 0) {
-                    var innerNode = this.buildMenu(elem.SubBranch);
-                    node.push(innerNode);
+                    this.buildArrays(elem.SubBranch);
                 }
             }, this);
 
-            return node;
+        },
+
+        addMenuItem: function(item,depth) {
+            this.push("categories", {id : item.Id, name: item.Name});
+            console.log(this.categories); //logs ok
         },
 
         handleRes: function() {
             this.response = this.$.categoryList.lastResponse;
-            this.menuItems = this.buildMenu(this.response);
-
-            this.categories = this.menuItems;
-
-            console.log(this.categories);
-
-            /*
-            this.categories.forEach(function(elem,index,arr){
-                console.log(elem);
-            });
-            */
+            this.buildArrays(this.response);
         },
 
         handleErr: function() {
