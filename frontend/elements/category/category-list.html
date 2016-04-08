@@ -21,9 +21,9 @@ in a multi-select list box
             on-error = "handleErr"
         ></iron-ajax>
 
-        <select name="select" multiple>
+        <select name="select" id="listChoices" multiple>
             <template is="dom-repeat" items="{{categories}}">
-                <option value="{{item.id}}">{{item.name}}</option>
+                <option value="{{item.id}}" on-tap="handleTap">{{item.name}}</option>
             </template>
         </select>
 
@@ -40,13 +40,14 @@ in a multi-select list box
                 type: String
             },
 
-            result: {
+            results: {
                 type: Array
             }
         },
 
         ready: function(){
             this.categories = new Array();
+            this.results = new Array();
             this.depth = 0;
             this.getCategories();
         },
@@ -63,28 +64,55 @@ in a multi-select list box
             this.$.categoryList.generateRequest();
         },
 
-        buildArrays: function(items) {
-            //when you build the menu, do this to keep track of indents
-            // if (elem.SubBranch.length > 0) { indent count++;} else { if indentcount > 0 {indentcount--;}}
-
+        buildArrays: function(items, count) {
             items.forEach(function(elem,index,arr) {
-                this.addMenuItem(elem);
 
+                //reset count if it's a root category
+                if (elem.ParentId == 0) {
+                    count = 0;
+                }
+
+                //add item
+                this.addMenuItem(elem,count);
+
+                //loop through subcategories
                 if (elem.SubBranch.length > 0) {
-                    this.buildArrays(elem.SubBranch);
+                    count++;
+                    this.buildArrays(elem.SubBranch,count);
                 }
             }, this);
 
         },
 
         addMenuItem: function(item,depth) {
-            this.push("categories", {id : item.Id, name: item.Name});
-            console.log(this.categories); //logs ok
+            indents = this.indentAdder(depth);
+            this.push("categories", {id : item.Id, name: indents + item.Name});
+        },
+
+        indentAdder: function(count) {
+            //create menu indents
+            var indentStr = "";
+
+            for (i=0; i<count; i++) {
+                indentStr += "-";
+            }
+
+            return indentStr;
+        },
+
+        handleTap: function() {
+            choices = this.$.listChoices;
+
+            for (i=0; i<choices.length; i++) {
+                if (choices[i].selected) {
+                    this.results.push(choices[i].value);
+                }
+            }
         },
 
         handleRes: function() {
             this.response = this.$.categoryList.lastResponse;
-            this.buildArrays(this.response);
+            this.buildArrays(this.response,0);
         },
 
         handleErr: function() {

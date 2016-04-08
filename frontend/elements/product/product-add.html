@@ -22,7 +22,7 @@
 
         <form is="iron-form">
 
-            <category-list url="/api/category/tree"></category-list>
+            <category-list url="/api/category/tree" results="{{categories}}"></category-list>
 
             <paper-input-container id="title">
                 <paper-input-error>This field is required</paper-input-error>
@@ -62,10 +62,17 @@
             url: {
                 type: String
             },
+
+            categories: {
+                type: Array
+            }
         },
 
         submitForm: function() {
 
+            console.log(this.categories);
+
+            /*
             //get user token
             var userToken = localStorage.getItem("token");
 
@@ -83,6 +90,7 @@
 
             //submit request
             this.$.productForm.generateRequest();
+            */
 
         },
 
