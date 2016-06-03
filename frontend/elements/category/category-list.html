@@ -101,6 +101,10 @@ in a multi-select list box
         },
 
         handleTap: function() {
+            //make new list per tap....should re-write this
+            this.results.length = 0;
+
+            //get reference to available categories
             choices = this.$.listChoices;
 
             for (i=0; i<choices.length; i++) {

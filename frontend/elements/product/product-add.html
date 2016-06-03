@@ -54,10 +54,6 @@
 
         is: "product-add",
 
-        ready: function() {
-
-        },
-
         properties: {
             url: {
                 type: String
@@ -68,11 +64,14 @@
             }
         },
 
+        ready: function() {
+            this.categories = new Array();
+        },
+
         submitForm: function() {
 
             console.log(this.categories);
 
-            /*
             //get user token
             var userToken = localStorage.getItem("token");
 
@@ -90,8 +89,9 @@
 
             //submit request
             this.$.productForm.generateRequest();
-            */
 
+            //clear category array
+            this.categories.length = 0;
         },
 
         packageData: function() {
@@ -100,7 +100,7 @@
                 sku: this.skuInput,
                 desc: this.descInput,
                 image: "test.jpg",
-                category: this.category
+                category: this.categories
             }
 
             return formData;
