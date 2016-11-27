@@ -6,4 +6,4 @@ Backend Go packages are located here: https://github.com/section14/go_polymer_co
 
 Use this terminal command to launch instead of `goapp serve`: 
 
---datastore_path=~/go_apps/data/datastore.db dispatch.yaml backend/app.yaml frontend/app.yaml
+dev_appserver.py --datastore_path=~/go_apps/data/datastore.db dispatch.yaml backend/app.yaml frontend/app.yaml
